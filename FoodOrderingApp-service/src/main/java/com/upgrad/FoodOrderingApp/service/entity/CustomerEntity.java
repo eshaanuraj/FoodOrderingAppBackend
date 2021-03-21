@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 @NamedQueries(
         {
                 // Query to retrieve records matching a given contact number
-                @NamedQuery(name = "getCustomerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber=:contactNumber")
+                @NamedQuery(name = "getCustomerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber=:contact_number")
         }
 )
 
@@ -43,11 +43,7 @@ public class CustomerEntity {
     @Size(max = 255)
     private String salt;
 
-    @Column(name = "role")
-    @Size(max = 200)
-    private String role;
-
-    @Column(name = "contactnumber")
+    @Column(name = "contact_number")
     @Size(max = 30)
     private String contactNumber;
 
@@ -107,14 +103,6 @@ public class CustomerEntity {
 
     public void setSalt(String salt) {
         this.salt = salt;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getContactNumber() {
