@@ -1,5 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,9 @@ public class CustomerDao {
     @PersistenceContext
     EntityManager entityManager;
 
+    /*
+     * Create a new User
+     */
     public CustomerEntity createUser(CustomerEntity customerEntity) {
         entityManager.persist(customerEntity);
         return customerEntity;
@@ -29,5 +33,20 @@ public class CustomerDao {
         } catch (NoResultException noResultException) {
             return null;
         }
+    }
+
+    /*
+     * Create a new Auth Token Entry
+     */
+    public CustomerAuthTokenEntity createAuthToken(final CustomerAuthTokenEntity customerAuthTokenEntity) {
+        entityManager.persist(customerAuthTokenEntity);
+        return customerAuthTokenEntity;
+    }
+
+    /*
+     * Update Auth Token when a field gets changed
+     */
+    public void updateAuthToken(final CustomerAuthTokenEntity customerAuthTokenEntity) {
+        entityManager.merge(customerAuthTokenEntity);
     }
 }
