@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +68,11 @@ public class CustomerController {
                     .message("LOGGED IN SUCCESSFULLY").firstName(customer.getFirstName())
                     .lastName(customer.getLastName()).emailAddress(customer.getEmail())
                     .contactNumber(customer.getContactNumber());
+
+            // Set Access-Control-Expose-Headers in the response header
+            List<String> header = new ArrayList<>();
+            header.add("access-token");
+            headers.setAccessControlExposeHeaders(header);
 
             headers.add("access-token", customerAuthToken.getAccessToken());
             return new ResponseEntity<>(loginResponse, headers, HttpStatus.OK);
