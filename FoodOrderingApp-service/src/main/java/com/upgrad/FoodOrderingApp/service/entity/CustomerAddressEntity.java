@@ -26,10 +26,10 @@ public class CustomerAddressEntity {
     private CustomerEntity customer;
 
     // One ID for a given address
-    @OneToOne
-    @JoinColumn(name = "address_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private char address; // Change it to Address Entity once defined
+    //@OneToOne
+    //@JoinColumn(name = "address_id")
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+    //private String address; // Change it to Address Entity once defined
 
     public long getId() {
         return id;

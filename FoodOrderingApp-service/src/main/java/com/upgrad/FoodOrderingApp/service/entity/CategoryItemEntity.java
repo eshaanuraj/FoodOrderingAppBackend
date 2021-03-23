@@ -17,10 +17,10 @@ public class CategoryItemEntity {
     private long id;
 
     // One item can be in many categories
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private char item; // Replace with Item Entity once defined
+    //@ManyToOne
+    //@JoinColumn(name = "item_id")
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+    //private String item; // Replace with Item Entity once defined*/
 
     // One category can have many items
     @ManyToOne
