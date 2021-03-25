@@ -22,6 +22,9 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider passwordCryptographyProvider;
 
+    @Autowired
+    private CommonService commonService;
+
     @Transactional(propagation = Propagation.REQUIRED)
 
     /*
@@ -36,7 +39,7 @@ public class AuthenticationService {
             throw new AuthenticationFailedException("ATH-001", "This contact number has not been registered!");
         }
 
-        final String encryptedPassword = PasswordCryptographyProvider.encrypt(password, customerEntity.getSalt());
+        final String encryptedPassword = passwordCryptographyProvider.encrypt(password, customerEntity.getSalt());
 
         if (encryptedPassword.equals(customerEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(password);
@@ -66,32 +69,17 @@ public class AuthenticationService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerAuthTokenEntity logout(final String authorization) throws AuthorizationFailedException {
+
         final ZonedDateTime now = ZonedDateTime.now();
+        CustomerAuthTokenEntity customerAuthTokenEntity;
 
-        CustomerAuthTokenEntity customerAuthTokenEntity = customerDao.getAuthtoken(authorization);
+        // If there are errors in Authentication, exception would have thrown, its clean if execution continues
+        customerAuthTokenEntity = commonService.getCustomerAuthDetails(authorization);
 
-        // check if a valid JWT token of an active user is passed
-        if (customerAuthTokenEntity != null) {
+        // Update the logout time and update the record in the database
+        customerAuthTokenEntity.setLogoutAt(now);
+        customerDao.updateAuthToken(customerAuthTokenEntity);
 
-            // Check if the user has already logged out
-            if (customerAuthTokenEntity.getLogoutAt() != null) {
-                throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint");
-            }
-
-            // Check if token has expired
-            final ZonedDateTime expiry = customerAuthTokenEntity.getExpiresAt();
-            if (now.compareTo(expiry) > 0) {
-                throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint");
-            }
-
-            // Update the logout time and update the record in the database
-            customerAuthTokenEntity.setLogoutAt(now);
-            customerDao.updateAuthToken(customerAuthTokenEntity);
-
-            return (customerAuthTokenEntity);
-
-        } else {
-            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-        }
+        return (customerAuthTokenEntity);
     }
 }
