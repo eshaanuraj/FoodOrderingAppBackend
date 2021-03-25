@@ -1,6 +1,5 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
