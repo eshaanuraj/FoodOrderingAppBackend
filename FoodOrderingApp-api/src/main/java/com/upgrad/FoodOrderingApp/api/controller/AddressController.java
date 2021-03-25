@@ -77,7 +77,7 @@ public class AddressController {
 			String city = saveAddressRequest.getCity(); 
 			addressEntity.setCity(city); 
 			String flatBuildingName = saveAddressRequest.getFlatBuildingName(); 
-			addressEntity.setFlatBuilNumber(flatBuildingName);
+			addressEntity.setFlatBuilNo(flatBuildingName);
  			String locality = saveAddressRequest.getLocality(); 
  			addressEntity.setLocality(locality); 			
 			String stateUuid = saveAddressRequest.getStateUuid(); 

@@ -1,9 +1,11 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -71,5 +73,13 @@ public class AddressDao {
 		entityManager.remove(customerAddressEntity); 
 	}
 	
+    public AddressEntity getAddressByUuid(String uuid){
+        try{
+            AddressEntity addressEntity = entityManager.createNamedQuery("getAddressByUuid",AddressEntity.class).setParameter("uuid",uuid).getSingleResult();
+            return addressEntity;
+        }catch (NoResultException nre){ 
+            return null;
+        }
+    }
 
 }

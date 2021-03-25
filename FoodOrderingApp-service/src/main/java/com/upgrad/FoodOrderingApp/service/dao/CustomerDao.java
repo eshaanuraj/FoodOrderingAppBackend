@@ -16,13 +16,19 @@ public class CustomerDao {
     EntityManager entityManager;
 
     /*
-     * Create a new User
+     * Create a new Customer
      */
     public CustomerEntity createUser(CustomerEntity customerEntity) {
         entityManager.persist(customerEntity);
         return customerEntity;
     }
 
+    /*
+     * Update an existing customer record
+     */
+    public void updateUser(CustomerEntity customerEntity) {
+        entityManager.merge(customerEntity);
+    }
     /*
      * Return a record matching the contact number passed
      */

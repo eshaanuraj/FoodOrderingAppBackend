@@ -8,51 +8,74 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "state", schema = "public")
-@NamedQueries(
-	{
-        // Query to retrieve records matching a given contact number
-        @NamedQuery(name = "getStateByUuid", query = "select u from StateEntity u where u.uuid=:state_uuid"),
+@Table(name = "state",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
+@NamedQueries({
+
+        @NamedQuery(name = "getStateByUuid", query = "SELECT s from StateEntity s where s.stateUuid = :uuid"),
         @NamedQuery(name = "getAllStates", query = "select * from StateEntity")
-    }
-)
-public class StateEntity {
+
+})
+public class StateEntity implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
+
 
 	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	@Column(name = "uuid")
-	private String uuid;
 
-	@Column(name = "state_name")
-	private String name;
+    @Column(name = "uuid")
+    @Size(max = 200)
+    @NotNull
+    private String stateUuid;
 
-	public long getId() {
-		return id;
-	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Column(name = "state_name")
+    @Size(max = 30)
+    private String stateName;
 
-	public String getUuid() {
-		return uuid;
-	}
+    public StateEntity(String stateUuid, String stateName) {
+        this.stateUuid = stateUuid;
+        this.stateName = stateName;
+        return;
+    }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    public StateEntity() {
 
-	public String getName() {
-		return name;
-	}
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getStateUuid() {
+        return stateUuid;
+    }
+
+    public void setStateUuid(String stateUuid) {
+        this.stateUuid = stateUuid;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
 
 }

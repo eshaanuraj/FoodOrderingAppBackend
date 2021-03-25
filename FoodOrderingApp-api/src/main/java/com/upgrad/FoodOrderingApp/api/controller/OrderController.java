@@ -85,6 +85,25 @@ public class OrderController {
     public ResponseEntity<List<AddressEntity>> getPastOrdersOfUser(@RequestHeader("authorization") final String authorization) throws  AuthenticationFailedException, AuthorizationFailedException,
              AddressNotFoundException {
 
+        String[] splitText = authorization.split("Basic "); 
+        byte[] decoder = Base64.getDecoder().decode(splitText[0]);
+        String decodedText = new String(decoder);
+        String[] decodedTextArray = decodedText.split(":");
+        
+        if (decodedTextArray.length == 2) {
+            CustomerAuthTokenEntity customerAuthToken = authenticationService.signin(decodedTextArray[0], decodedTextArray[1]);
+            
+            if(customerAuthToken == null) {
+            	throw new AuthorizationFailedException("ATHR-001","Customer is not Logged in"); 
+            }
+            if(customerAuthToken.getLogoutAt() != null) {
+            	throw new AuthorizationFailedException("ATHR-002","Customer is logged out. Log in again to access this endpoint.");
+            } 
+            if(customerAuthToken.getExpiresAt() != null) {
+            	throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint."); 
+            }
+            
+        }
     	return null;
     	
     }
@@ -95,6 +114,25 @@ public class OrderController {
     		SaveOrderRequest saveOrderRequest) throws  AuthenticationFailedException, AuthorizationFailedException,
              AddressNotFoundException {
 
+        String[] splitText = authorization.split("Basic "); 
+        byte[] decoder = Base64.getDecoder().decode(splitText[0]);
+        String decodedText = new String(decoder);
+        String[] decodedTextArray = decodedText.split(":");
+        
+        if (decodedTextArray.length == 2) {
+            CustomerAuthTokenEntity customerAuthToken = authenticationService.signin(decodedTextArray[0], decodedTextArray[1]);
+            
+            if(customerAuthToken == null) {
+            	throw new AuthorizationFailedException("ATHR-001","Customer is not Logged in"); 
+            }
+            if(customerAuthToken.getLogoutAt() != null) {
+            	throw new AuthorizationFailedException("ATHR-002","Customer is logged out. Log in again to access this endpoint.");
+            } 
+            if(customerAuthToken.getExpiresAt() != null) {
+            	throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint."); 
+            }
+            
+        }
     	return null;
     	
     }

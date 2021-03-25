@@ -28,7 +28,7 @@ public class AddressService {
 	public String saveCustomerAddress(String stateUuid,CustomerEntity customerEntity, AddressEntity addressEntity) 
 			throws SaveAddressException, AddressNotFoundException {
 
-		if(addressEntity.getCity() == null || addressEntity.getFlatBuilNumber() == null 
+		if(addressEntity.getCity() == null || addressEntity.getFlatBuilNo() == null 
 				|| addressEntity.getLocality() == null || addressEntity.getPincode() == null
 				|| stateUuid == null) {
 			throw new SaveAddressException("SAR-001", "No field can be empty");
