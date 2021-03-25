@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "restaurant_item")
 @NamedQueries({
-        @NamedQuery(name = "getItemsByRestaurant",query = "SELECT r FROM RestaurantItemEntity r WHERE r.restaurant = :restaurant ORDER BY LOWER(r.item.itemName) ASC "),
+
 })
 public class RestaurantItemEntity implements Serializable {
 
@@ -21,11 +21,11 @@ public class RestaurantItemEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
-    private ItemEntity item;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "item_id")
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @NotNull
+//    private ItemEntity item;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
@@ -42,13 +42,6 @@ public class RestaurantItemEntity implements Serializable {
         this.id = id;
     }
 
-    public ItemEntity getItem() {
-        return item;
-    }
-
-    public void setItem(ItemEntity item) {
-        this.item = item;
-    }
     public void setRestaurant(RestaurantEntity restaurant) {
         this.restaurant = restaurant;
     }
