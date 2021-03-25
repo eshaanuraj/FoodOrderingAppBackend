@@ -10,7 +10,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "customer_address", schema = "public")
 @NamedQueries({
-
+   @NamedQuery(name="getAddressByCustomerId",query="select u from CustomerAddressEntity u where u.customer.id=:cust_id"),
+   @NamedQuery(name="getAddressByAddrId",query="select u from CustomerAddressEntity u where u.address.id=:addr_id and u.customer.id=:cust_id")
 })
 
 public class CustomerAddressEntity {
@@ -26,10 +27,10 @@ public class CustomerAddressEntity {
     private CustomerEntity customer;
 
     // One ID for a given address
-    //@OneToOne
-    //@JoinColumn(name = "address_id")
-    //@OnDelete(action = OnDeleteAction.CASCADE)
-    //private String address; // Change it to Address Entity once defined
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private AddressEntity address; // Change it to Address Entity once defined
 
     public long getId() {
         return id;
@@ -46,4 +47,17 @@ public class CustomerAddressEntity {
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
     }
+
+	public AddressEntity getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressEntity address) {
+		this.address = address;
+	}
+    
+    
+    
+    
+    
 }
