@@ -1,8 +1,13 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.upgrad.FoodOrderingApp.api.model.CouponDetailsResponse;
+import com.upgrad.FoodOrderingApp.api.model.ItemQuantity;
+import com.upgrad.FoodOrderingApp.api.model.OrderList;
 import com.upgrad.FoodOrderingApp.api.model.SaveOrderRequest;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
 import com.upgrad.FoodOrderingApp.service.businness.CommonService;
@@ -24,6 +31,10 @@ import com.upgrad.FoodOrderingApp.service.businness.OrderService;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -67,7 +78,7 @@ public class OrderController {
             	throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint."); 
             }
             
-            CouponEntity couponByName = couponService.getCouponByName(couponName);  
+            CouponEntity couponByName = orderService.getCouponByName(couponName);  
             CouponDetailsResponse response = new CouponDetailsResponse();
             response.setId(couponByName.getUuid());  
             response.setCouponName(couponByName.getCouponName()); 
@@ -82,7 +93,7 @@ public class OrderController {
     
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<AddressEntity>> getPastOrdersOfUser(@RequestHeader("authorization") final String authorization) throws  AuthenticationFailedException, AuthorizationFailedException,
+    public ResponseEntity<List<OrderList>> getPastOrdersOfUser(@RequestHeader("authorization") final String authorization) throws  AuthenticationFailedException, AuthorizationFailedException,
              AddressNotFoundException {
 
         String[] splitText = authorization.split("Basic "); 
@@ -102,6 +113,11 @@ public class OrderController {
             if(customerAuthToken.getExpiresAt() != null) {
             	throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint."); 
             }
+            
+            CustomerEntity customer = customerAuthToken.getCustomer(); 
+            
+            List<OrderEntity> allOrdersForCustomer = orderService.getAllOrdersForCustomer(customer); 
+            
             
         }
     	return null;
@@ -132,7 +148,24 @@ public class OrderController {
             	throw new AuthorizationFailedException("ATHR-003","Your session is expired. Log in again to access this endpoint."); 
             }
             
+			String addressId = saveOrderRequest.getAddressId(); 
+			BigDecimal bill = saveOrderRequest.getBill(); 
+			UUID couponId = saveOrderRequest.getCouponId(); 
+			BigDecimal discount = saveOrderRequest.getDiscount(); 
+			List<ItemQuantity> itemQuantities = saveOrderRequest.getItemQuantities(); 
+			UUID paymentId = saveOrderRequest.getPaymentId(); 
+			UUID restaurantId = saveOrderRequest.getRestaurantId();
+			
+			List<OrderItemEntity> orderItemEntityList = new ArrayList<OrderItemEntity>();
+			OrderEntity orderEntity = new OrderEntity();
+		    for(ItemQuantity itq : itemQuantities) {
+		    	OrderItemEntity ordItemEntity = new OrderItemEntity();
+		    }
+			orderService.saveOrder(orderEntity);
+			
+			
         }
+        
     	return null;
     	
     }

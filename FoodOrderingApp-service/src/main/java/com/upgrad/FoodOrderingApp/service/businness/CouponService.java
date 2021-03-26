@@ -16,22 +16,6 @@ import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 public class CouponService {
 
 
-	@Autowired
-	private CouponDao couponDao;
-	
-	
-	public CouponEntity getCouponByName(String couponName) throws CouponNotFoundException { 
-
-		if(couponName == null || couponName.strip() == null) {
-			throw new CouponNotFoundException("CPF-002","Coupon name field should not be empty");
-		}
-	
-		CouponEntity couponByName = couponDao.getCouponByName(couponName);
-		if(couponByName == null) {
-			throw new CouponNotFoundException("CPF-001","No coupon by this name");
-		}
-		return couponByName;
-	}
 	
 	
 
