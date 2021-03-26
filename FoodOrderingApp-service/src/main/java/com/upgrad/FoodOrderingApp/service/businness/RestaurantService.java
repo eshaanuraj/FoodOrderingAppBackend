@@ -14,8 +14,14 @@ import java.util.List;
 
 @Service
 public class RestaurantService {
+    //Handles all data related to the RestaurantEntity
     @Autowired
-    RestaurantDao restaurantDao; //Handles all data related to the RestaurantEntity
+    RestaurantDao restaurantDao;
+
+    // This Method is to get getAllRestaurants endpoint
+    public List<RestaurantEntity> getAllRestaurants() {
+        return restaurantDao.getAllRestaurants();
+    }
 
     /* This method will get restaurants By Rating and returns list of RestaurantEntity
       Throws exception with error code and error message.
