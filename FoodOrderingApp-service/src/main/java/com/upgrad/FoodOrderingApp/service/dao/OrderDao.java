@@ -26,8 +26,9 @@ public class OrderDao {
 	}
 	
 	
-	public void saveOrder(OrderEntity orderEntity) {
+	public OrderEntity saveOrder(OrderEntity orderEntity) {
 		entityManager.persist(orderEntity); 
+		return orderEntity;
 	}
 	
 	

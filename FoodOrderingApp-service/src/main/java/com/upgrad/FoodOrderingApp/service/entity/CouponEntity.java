@@ -15,7 +15,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "coupon", schema = "public")
 @NamedQueries({
-    @NamedQuery(name="getCouponDetailsByName",query="select u from CouponEntity u where u.couponName = :coupon_name")
+    @NamedQuery(name="getCouponDetailsByName",query="select u from CouponEntity u where u.couponName = :coupon_name"),
+    @NamedQuery(name="getCouponEntityByUuid",query="select u from CouponEntity u where u.uuid = :uuid")
 })
 public class CouponEntity implements Serializable{
 

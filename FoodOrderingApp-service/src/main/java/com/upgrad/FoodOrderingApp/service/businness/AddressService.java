@@ -96,5 +96,8 @@ public class AddressService {
 	}
 	
 	
+	public AddressEntity getAddressByUuid(String uuid) {
+		return addressDao.getAddressByUuid(uuid);
+	}
 
 }

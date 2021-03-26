@@ -4,13 +4,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.upgrad.FoodOrderingApp.service.dao.CouponDao;
+import com.upgrad.FoodOrderingApp.service.dao.ItemDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 
@@ -24,6 +28,10 @@ public class OrderService {
 	
 	@Autowired
 	private OrderDao orderDao;
+	
+	
+	@Autowired
+	private ItemDao itemDao;
 	
 	
 	public CouponEntity getCouponByName(String couponName) throws CouponNotFoundException { 
@@ -40,6 +48,11 @@ public class OrderService {
 	}
 	
 	
+	public CouponEntity getCouponByUuid(String uuid) {
+		CouponEntity couponByUuid = couponDao.getCouponByUuid(uuid);
+		return couponByUuid;
+	}
+	
 	public List<OrderEntity> getAllOrdersForCustomer(CustomerEntity customer) {
 		
 		List<OrderEntity> allOrdersForCustomer = orderDao.getAllOrdersForCustomer(customer.getId());
@@ -48,10 +61,15 @@ public class OrderService {
 	}
 
 
-	public void saveOrder(OrderEntity orderEntity) {
-		// TODO Auto-generated method stub 
-		orderDao.saveOrder(orderEntity); 
-		
+	public OrderEntity saveOrder(OrderEntity orderEntity) {
+		OrderEntity savedOrder = orderDao.saveOrder(orderEntity);  
+		return savedOrder;
+	}
+
+
+	public ItemEntity getItemByUuid(@Valid UUID uuid) { 
+		ItemEntity itemByUuid = itemDao.getItemByUuid(uuid); 
+		return itemByUuid;
 	}
 	
 
