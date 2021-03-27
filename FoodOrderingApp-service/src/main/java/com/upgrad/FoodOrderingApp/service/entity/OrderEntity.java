@@ -26,7 +26,7 @@ import org.hibernate.annotations.CascadeType;
 @Table(name = "orders",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries(
   {
-    @NamedQuery(name = "getOrdersByCustomerId",query = "SELECT o FROM OrderEntity o where o.customer.id = :customer_id ORDER BY u.orderedDate DESC")
+    @NamedQuery(name = "getOrdersByCustomerId",query = "SELECT o FROM OrderEntity o where o.customer.id = :customer_id ORDER BY o.orderedDate DESC")
   }
 )
 public class OrderEntity implements Serializable{

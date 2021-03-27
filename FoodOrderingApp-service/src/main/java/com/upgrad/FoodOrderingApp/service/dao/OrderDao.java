@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 
-@Repository
+@Repository 
 public class OrderDao {
 
 	@PersistenceContext 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -155,7 +156,7 @@ public class AddressController {
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/address/{address_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<DeleteAddressResponse> deleteSavedAddresses(@RequestHeader("authorization") final String authorization,
-    		@RequestParam("address_id") Integer addressId) throws  AuthenticationFailedException, AuthorizationFailedException,
+    		@PathVariable("address_id") Integer addressId) throws  AuthenticationFailedException, AuthorizationFailedException,
              AddressNotFoundException {
 
         String[] splitText = authorization.split("Basic "); 

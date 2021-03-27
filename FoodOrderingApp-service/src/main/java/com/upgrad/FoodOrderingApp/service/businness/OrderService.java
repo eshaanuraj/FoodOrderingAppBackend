@@ -1,11 +1,11 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class OrderService {
 	
 	public CouponEntity getCouponByName(String couponName) throws CouponNotFoundException { 
 
-		if(couponName == null || couponName.strip() == null) {
+		if(StringUtils.isEmpty(couponName)) {
 			throw new CouponNotFoundException("CPF-002","Coupon name field should not be empty");
 		}
 	

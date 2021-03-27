@@ -13,7 +13,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 public class CouponDao {
 
 	@PersistenceContext
-	private EntityManager entityManager;
+	private EntityManager entityManager; 
 
 	public CouponEntity getCouponByName(String couponName) {
 		try {
