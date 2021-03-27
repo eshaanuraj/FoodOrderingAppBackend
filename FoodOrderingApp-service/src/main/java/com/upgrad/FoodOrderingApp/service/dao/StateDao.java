@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 
+import javax.persistence.NoResultException;
+
 @Repository
 public class StateDao {
 
@@ -31,4 +33,16 @@ public class StateDao {
 		
 	}
 
+
+
+    public StateEntity getStateById(final Long stateId) {
+        try {
+            return entityManager.createNamedQuery("getStateById", StateEntity.class).setParameter("id", stateId)
+                    .getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
+    }
+    
 }
+

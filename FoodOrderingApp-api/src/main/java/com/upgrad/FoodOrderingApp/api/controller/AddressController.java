@@ -135,7 +135,7 @@ public class AddressController {
             	addressList.setPincode(addressEntity.getPincode()); 
             	
             	AddressListState addressListState = new AddressListState();
-            	addressListState.setId(UUID.fromString(addressEntity.getState().getStateUuid())); 
+            	addressListState.setId(UUID.fromString(addressEntity.getState().getUuid())); 
             	addressListState.setStateName(addressEntity.getState().getStateName()); 
             	
             	addressList.setState(addressListState); 

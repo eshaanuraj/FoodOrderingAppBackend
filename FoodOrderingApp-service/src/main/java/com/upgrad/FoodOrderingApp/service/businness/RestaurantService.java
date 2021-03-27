@@ -14,15 +14,21 @@ import java.util.List;
 
 @Service
 public class RestaurantService {
+    //Handles all data related to the RestaurantEntity
     @Autowired
-    RestaurantDao restaurantDao; //Handles all data related to the RestaurantEntity
+    RestaurantDao restaurantDao;
+
+    // This Method is to get getAllRestaurants endpoint
+    public List<RestaurantEntity> getAllRestaurants() {
+        return restaurantDao.getAllRestaurants();
+    }
 
     /* This method will get restaurants By Rating and returns list of RestaurantEntity
       Throws exception with error code and error message.
       */
     public List<RestaurantEntity> getRestaurantsByRating(){
 
-        //Calls restaurantsByRating of restaurantDao to get list of RestaurantEntity
+        //This Method will call restaurantsByRating from restaurantDao to get list of RestaurantEntity
         List<RestaurantEntity> restaurantEntities = restaurantDao.getRestaurantsByRating();
         return restaurantEntities;
     }
@@ -55,10 +61,7 @@ public class RestaurantService {
         if (restaurantEntity == null){
             throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
         }
-
         return restaurantEntity;
-
-
     }
 
 

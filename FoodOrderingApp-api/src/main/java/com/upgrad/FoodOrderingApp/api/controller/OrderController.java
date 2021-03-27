@@ -181,7 +181,7 @@ public class OrderController {
     	orderListAddr.setPincode(address.getPincode()); 
     	
     	OrderListAddressState addrState = new OrderListAddressState();
-    	addrState.setId(UUID.fromString(address.getState().getStateUuid())); 
+    	addrState.setId(UUID.fromString(address.getState().getUuid())); 
     	addrState.setStateName(address.getState().getStateName()); 
     	
     	orderListAddr.setState(addrState); 

@@ -3,6 +3,8 @@ package com.upgrad.FoodOrderingApp.service.businness;
 import java.util.List;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +88,7 @@ public class AddressService {
 		// TODO Auto-generated method stub
 		Integer customerId = customerEntity.getId(); 
 		
-		AddressEntity addressEntity = addressDao.getAddressById(addressId); 
+		AddressEntity addressEntity = addressDao.getAddressById(addressId.longValue()); 
 		if(addressEntity == null) {
 			throw new AddressNotFoundException("ANF-003","No address by this id");
 		} 
@@ -99,5 +101,12 @@ public class AddressService {
 	public AddressEntity getAddressByUuid(String uuid) {
 		return addressDao.getAddressByUuid(uuid);
 	}
+
+
+
+    @Transactional
+    public AddressEntity getAddressById( Long addressId) {
+        return addressDao.getAddressById(addressId);
+    }
 
 }

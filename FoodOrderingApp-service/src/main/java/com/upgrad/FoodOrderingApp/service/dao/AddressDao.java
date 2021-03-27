@@ -62,7 +62,7 @@ public class AddressDao {
 	}
 	
 	
-	public AddressEntity getAddressById(Integer addressId) {
+	public AddressEntity getAddressById(Long addressId) {
 		AddressEntity addressEntity = entityManager.find(AddressEntity.class, addressId); 
 		return addressEntity;
 	}
