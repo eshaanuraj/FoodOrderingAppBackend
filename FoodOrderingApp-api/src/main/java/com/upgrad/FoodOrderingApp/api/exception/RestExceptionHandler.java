@@ -1,10 +1,7 @@
 package com.upgrad.FoodOrderingApp.api.exception;
 
 import com.upgrad.FoodOrderingApp.api.model.ErrorResponse;
-import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
-import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,5 +33,11 @@ public class RestExceptionHandler {
     @ExceptionHandler(UpdateCustomerException.class)
     public ResponseEntity<ErrorResponse> updateCustomerException(UpdateCustomerException updateCustomerException, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(updateCustomerException.getCode()).message(updateCustomerException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    // Handle Exceptions related to Category API's
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> categoryNotFoundException(CategoryNotFoundException categoryNotFoundException, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(categoryNotFoundException.getCode()).message(categoryNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
     }
 }

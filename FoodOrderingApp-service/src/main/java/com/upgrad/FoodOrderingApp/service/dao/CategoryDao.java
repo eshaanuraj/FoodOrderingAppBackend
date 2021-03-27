@@ -22,4 +22,13 @@ public class CategoryDao {
             return null;
         }
     }
+
+    // Get a Category record corresponding to the UUID
+    public CategoryEntity getCategoryById(String uuid) {
+        try {
+            return entityManager.createNamedQuery("getCategoryById", CategoryEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 }

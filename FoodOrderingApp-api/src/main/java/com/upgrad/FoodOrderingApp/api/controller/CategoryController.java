@@ -1,17 +1,18 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.CategoriesListResponse;
+import com.upgrad.FoodOrderingApp.api.model.CategoryDetailsResponse;
 import com.upgrad.FoodOrderingApp.api.model.CategoryListResponse;
+import com.upgrad.FoodOrderingApp.api.model.ItemList;
 import com.upgrad.FoodOrderingApp.service.businness.CategoryService;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
+import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,5 +45,36 @@ public class CategoryController {
             categoriesListResponse.addCategoriesItem(categoryListResponse);
         }
         return new ResponseEntity<CategoriesListResponse>(categoriesListResponse, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = "/category/id", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CategoryDetailsResponse>getCategoryDetails(@RequestHeader("UUID") final String uuid) throws CategoryNotFoundException {
+
+        CategoryEntity category;
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        List <ItemList> itemLists = new ArrayList<>();
+        CategoryDetailsResponse categoryDetailsResponse = new CategoryDetailsResponse();
+
+        // Get the Category corresponding to the UUID
+        category = categoryService.getCategoryById(uuid);
+
+        // Get the list of items corresponding to the category
+        itemEntityList = categoryService.getItemsByCategory(category);
+
+        categoryDetailsResponse.setCategoryName(category.getCategoryName());
+        categoryDetailsResponse.setId(UUID.fromString(category.getUuid()));
+
+        for (ItemEntity itemEntity : itemEntityList) {
+            ItemList item = new ItemList();
+
+            item.setId(itemEntity.getUuid());
+            item.setItemName(itemEntity.getItemName());
+            item.setPrice(itemEntity.getPrice());
+            itemLists.add(item);
+        }
+        categoryDetailsResponse.setItemList(itemLists);
+
+        return new ResponseEntity<CategoryDetailsResponse>(categoryDetailsResponse, HttpStatus.OK);
     }
 }

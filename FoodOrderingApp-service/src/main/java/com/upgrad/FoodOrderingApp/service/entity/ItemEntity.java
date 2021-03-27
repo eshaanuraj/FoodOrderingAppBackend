@@ -17,7 +17,8 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "item",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries(
   {
-    @NamedQuery(name = "getItemByUuid",query = "SELECT it FROM ItemEntity it where it.uuid = :uuid ")
+		  @NamedQuery(name = "getItemByUuid",query = "SELECT it FROM ItemEntity it where it.uuid = :uuid "),
+		  @NamedQuery(name = "getItemById",query = "SELECT it FROM ItemEntity it where it.id = :id "),
   }
 )
 public class ItemEntity implements Serializable{

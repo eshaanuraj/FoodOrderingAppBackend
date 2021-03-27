@@ -30,7 +30,7 @@ public class CustomerAddressEntity {
     @OneToOne
     @JoinColumn(name = "address_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private AddressEntity address; // Change it to Address Entity once defined
+    private AddressEntity address;
 
     public long getId() {
         return id;
@@ -55,9 +55,5 @@ public class CustomerAddressEntity {
 	public void setAddress(AddressEntity address) {
 		this.address = address;
 	}
-    
-    
-    
-    
     
 }

@@ -25,6 +25,15 @@ public class ItemDao {
 		} catch (Exception ex) {
 			return null;
 		}
+	}
 
+	public ItemEntity getItemById(int id) {
+		try {
+			ItemEntity itemEntity = entityManager.createNamedQuery("getItemById", ItemEntity.class)
+					.setParameter("id", id).getSingleResult();
+			return itemEntity;
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 }
