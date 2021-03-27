@@ -28,7 +28,7 @@ public class RestaurantService {
       */
     public List<RestaurantEntity> getRestaurantsByRating(){
 
-        //Calls restaurantsByRating of restaurantDao to get list of RestaurantEntity
+        //This Method will call restaurantsByRating from restaurantDao to get list of RestaurantEntity
         List<RestaurantEntity> restaurantEntities = restaurantDao.getRestaurantsByRating();
         return restaurantEntities;
     }
@@ -61,10 +61,7 @@ public class RestaurantService {
         if (restaurantEntity == null){
             throw new RestaurantNotFoundException("RNF-001","No restaurant by this id");
         }
-
         return restaurantEntity;
-
-
     }
 
 
