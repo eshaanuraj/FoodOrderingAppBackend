@@ -1,6 +1,14 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
@@ -8,11 +16,19 @@ import java.io.Serializable;
 @Table(name = "state",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries({
 
+        @NamedQuery(name = "getStateByUuid", query = "SELECT s from StateEntity s where s.stateUuid = :uuid"),
+        @NamedQuery(name = "getAllStates", query = "select u from StateEntity u"),
         @NamedQuery(name = "getStateById", query = "SELECT s from StateEntity s where s.id = :id")
 })
 public class StateEntity implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
+
+
+	@Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,4 +77,5 @@ public class StateEntity implements Serializable {
     public String getUuid() {
         return Uuid;
     }
+    
 }
