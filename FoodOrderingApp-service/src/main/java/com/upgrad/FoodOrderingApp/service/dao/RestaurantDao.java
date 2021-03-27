@@ -22,11 +22,22 @@ public class RestaurantDao {
             return null;
         }
     }
-
+    /**
+     * Method to get all Restaurants as List.
+     * @return List<RestaurantEntity>
+     * @Catch Exception NoResultException
+     */
+    public List<RestaurantEntity> getAllRestaurants() {
+        try {
+            return entityManager.createNamedQuery("getAllRestaurants", RestaurantEntity.class).getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
     //Method to get restaurant by UUID from db, returns null on error
     public RestaurantEntity getRestaurantByUuid(String uuid) {
         try {
-            RestaurantEntity restaurantEntity = entityManager.createNamedQuery("getRestaurantByUuid",RestaurantEntity.class).setParameter("uuid",uuid).getSingleResult();
+            RestaurantEntity restaurantEntity = entityManager.createNamedQuery("getRestaurantByUUId",RestaurantEntity.class).setParameter("uuid",uuid).getSingleResult();
             return restaurantEntity;
         }catch (NoResultException nre){
             return null;

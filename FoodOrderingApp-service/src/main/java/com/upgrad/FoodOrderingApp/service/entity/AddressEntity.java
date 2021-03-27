@@ -12,15 +12,17 @@ import java.io.Serializable;
 @Table (name = "address",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries({
 
-        @NamedQuery(name = "getAddressByUuid",query = "SELECT a from AddressEntity a where a.uuid = :uuid"),
+        @NamedQuery(name = "getAddressById",query = "SELECT a from AddressEntity a where a.id = :id"),
 })
+
+
 public class AddressEntity implements Serializable {
 
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "uuid")
     @Size(max = 200)
@@ -64,11 +66,11 @@ public class AddressEntity implements Serializable {
         return;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -126,5 +128,12 @@ public class AddressEntity implements Serializable {
 
     public void setState(StateEntity state) {
         this.state = state;
+    }
+
+    public String getFlatBuildingNumber() {
+        return flatBuilNo;
+    }
+    public void setFlatBuildingNumber(String flatBuilNo) {
+        this.flatBuilNo = flatBuilNo;
     }
 }

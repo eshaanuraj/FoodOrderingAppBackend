@@ -13,9 +13,9 @@ public class AddressDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public AddressEntity getAddressByUuid(String uuid){
+    public AddressEntity getAddressById(Long Id){
         try{
-            AddressEntity addressEntity = entityManager.createNamedQuery("getAddressByUuid",AddressEntity.class).setParameter("uuid",uuid).getSingleResult();
+            AddressEntity addressEntity = entityManager.createNamedQuery("getAddressById",AddressEntity.class).setParameter("id",Id).getSingleResult();
             return addressEntity;
         }catch (NoResultException nre){
             return null;
