@@ -14,17 +14,6 @@ public class RestaurantDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-  /*  //Method to get the list of restaurant by ratings from db, returns null on error
-    public List<RestaurantEntity> getRestaurantsByRating(){
-        try{
-            List<RestaurantEntity> restaurantEntities = entityManager.createNamedQuery("getRestaurantsByRating",RestaurantEntity.class).getResultList();
-            return restaurantEntities;
-        }catch (NoResultException nre){
-            return null;
-        }
-    }
-    */
-
     /**
      * Method to get all Restaurants as List.
      * @return List<RestaurantEntity>
@@ -46,6 +35,10 @@ public class RestaurantDao {
             return null;
         }
 
+    }
+    // Method to update Restaurant Details
+    public void updateRestaurantDetails(final RestaurantEntity updatedRestaurantEntity) {
+        entityManager.merge(updatedRestaurantEntity);
     }
     //To get the list of restaurant by name from db, returns null on error
     public List<RestaurantEntity> getRestaurantsByName(String restaurantName) {

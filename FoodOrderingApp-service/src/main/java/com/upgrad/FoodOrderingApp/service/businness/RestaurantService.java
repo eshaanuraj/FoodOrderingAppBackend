@@ -4,11 +4,16 @@ import com.upgrad.FoodOrderingApp.service.dao.RestaurantDao;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantCategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.InvalidRatingException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,21 +23,13 @@ public class RestaurantService {
     @Autowired
     RestaurantDao restaurantDao;
 
+    @Autowired
+    CommonService commonService;
     // This Method is to get getAllRestaurants endpoint
     public List<RestaurantEntity> getAllRestaurants() {
         return restaurantDao.getAllRestaurants();
     }
 
-    /* This method will get restaurants By Rating and returns list of RestaurantEntity
-      Throws exception with error code and error message.
-
-    public List<RestaurantEntity> getRestaurantsByRating(){
-
-        //This Method will call restaurantsByRating from restaurantDao to get list of RestaurantEntity
-        List<RestaurantEntity> restaurantEntities = restaurantDao.getRestaurantsByRating();
-        return restaurantEntities;
-    }
-*/
     /* This method will get restaurants By Name and returns list of RestaurantEntity. This method takes Restaurant name as parameter.
     In case of an error, throws exception with error code and error message.
     */
@@ -69,4 +66,40 @@ public class RestaurantService {
         return restaurantDao.getRestaurantByCategoryId(categoryID);
     }
 
+    @Transactional
+    public RestaurantEntity updateRestaurantDetails (final Double customerRating, final String restaurant_id, final String authorizationToken)
+            throws AuthorizationFailedException, RestaurantNotFoundException, InvalidRatingException {
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        // Validates the customer using the authorizationToken
+        commonService.getCustomerAuthDetails(authorizationToken);
+
+        // Throw exception if path variable(restaurant_id) is empty
+        if(restaurant_id == null || restaurant_id.isEmpty() || restaurant_id.equalsIgnoreCase("\"\"")){
+            throw new RestaurantNotFoundException("RNF-002", "Restaurant id field should not be empty");
+        }
+
+        //get the restaurant Details using the restaurantUuid
+        RestaurantEntity restaurantEntity =  restaurantDao.getRestaurantByUuid(restaurant_id);
+
+        if (restaurantEntity == null) {
+            throw new RestaurantNotFoundException("RNF-001", "No restaurant by this id");
+        }
+
+        // Throw exception if path variable(restaurant_id) is empty
+        if(customerRating == null || customerRating.isNaN() || customerRating < 1 || customerRating > 5 ){
+            throw new InvalidRatingException("IRE-001", "Restaurant should be in the range of 1 to 5");
+        }
+
+        // update rating and add it to the restaurantEntity
+        BigDecimal oldRating = (restaurantEntity.getCustomerRating().multiply(new BigDecimal(restaurantEntity.getNumCustomersRated())));
+        BigDecimal newRating = (oldRating.add(new BigDecimal(customerRating))).divide(new BigDecimal(restaurantEntity.getNumCustomersRated() + 1));
+        restaurantEntity.setCustomerRating(newRating);
+        restaurantEntity.setNumCustomersRated(restaurantEntity.getNumCustomersRated() + 1);
+
+        //called restaurantDao to merge the content and update in the database
+        restaurantDao.updateRestaurantDetails(restaurantEntity);
+        return restaurantEntity;
+    }
 }

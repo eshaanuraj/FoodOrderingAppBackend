@@ -22,7 +22,7 @@ import java.util.Set;
         {
                 @NamedQuery(name = "getAllRestaurants", query = "select r from RestaurantEntity r order by r.customerRating desc"),
                 @NamedQuery(name = "getRestaurantByName", query = "select r from RestaurantEntity  r where lower(r.restaurantName) like :restaurantName order by r.restaurantName"),
-                @NamedQuery(name = "getRestaurantByUUId",query = "select r from RestaurantEntity r where lower(r.uuid) = :restaurantUUID")
+                @NamedQuery(name = "getRestaurantByUUId",query = "select r from RestaurantEntity r where lower(r.uuid) = :uuid")
         }
 )
 
@@ -31,7 +31,7 @@ public class RestaurantEntity implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
     @Column(name = "uuid")
     @NotNull
@@ -78,11 +78,11 @@ public class RestaurantEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "item_id", referencedColumnName="id", nullable = false)
     )
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
