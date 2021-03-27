@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Table(name = "state",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries({
 
-//        @NamedQuery(name = "getStateByUuid", query = "SELECT s from StateEntity s where s.stateUuid = :uuid"),
+        @NamedQuery(name = "getStateByUuid", query = "SELECT s from StateEntity s where s.uuid = :uuid"),
         @NamedQuery(name = "getAllStates", query = "select u from StateEntity u"),
         @NamedQuery(name = "getStateById", query = "SELECT s from StateEntity s where s.id = :id")
 })
@@ -37,15 +37,15 @@ public class StateEntity implements Serializable {
     @Column(name = "uuid")
     @Size(max = 200)
     @NotNull
-    private String Uuid;
+    private String uuid;
 
 
     @Column(name = "state_name")
     @Size(max = 30)
     private String stateName;
 
-    public StateEntity(String Uuid, String stateName) {
-        this.Uuid = Uuid;
+    public StateEntity(String uuid, String stateName) {
+        this.uuid = uuid;
         this.stateName = stateName;
         return;
     }
@@ -62,9 +62,6 @@ public class StateEntity implements Serializable {
         this.id = id;
     }
 
-    public void setStateUuid(String stateUuid) {
-        this.Uuid = stateUuid;
-    }
 
     public String getStateName() {
         return stateName;
@@ -75,7 +72,11 @@ public class StateEntity implements Serializable {
     }
 
     public String getUuid() {
-        return Uuid;
+        return uuid;
     }
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
     
 }
