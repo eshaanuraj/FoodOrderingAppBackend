@@ -1,5 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
+
 import com.upgrad.FoodOrderingApp.service.dao.StateDao;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,4 +18,5 @@ public class StateService {
     public StateEntity getStateById(final Long stateId) {
         return stateDao.getStateById(stateId);
     }
+    
 }

@@ -1,18 +1,39 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
+import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
+
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 
 @Repository
 public class StateDao {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@PersistenceContext
+	EntityManager entityManager;
+
+	public StateEntity getStateEntityById(String id) {
+		return null;
+	}
+
+	public StateEntity getStateEntityByUuid(String stateUuid) {
+		
+		try {
+			
+			StateEntity stateEntity = entityManager.createNamedQuery("getStateByUuid", StateEntity.class)
+					.getSingleResult();
+			return stateEntity;
+			
+		} catch (Exception ex) {
+			return null;
+		}
+		
+	}
+
+
 
     public StateEntity getStateById(final Long stateId) {
         try {
@@ -22,5 +43,6 @@ public class StateDao {
             return null;
         }
     }
+    
 }
 

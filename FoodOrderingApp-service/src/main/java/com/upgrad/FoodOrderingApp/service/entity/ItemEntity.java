@@ -1,60 +1,94 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
-    public class ItemEntity implements Serializable {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-        @Id
-        @Column(name = "id")
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private long id;
+@Entity
+@Table(name = "item",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
+@NamedQueries(
+  {
+		  @NamedQuery(name = "getItemByUuid",query = "SELECT it FROM ItemEntity it where it.uuid = :uuid "),
+		  @NamedQuery(name = "getItemById",query = "SELECT it FROM ItemEntity it where it.id = :id "),
+  }
+)
+public class ItemEntity implements Serializable{
 
-        @Column(name = "uuid")
-        @Size(max = 200)
-        private String uuid;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
+	
+	
+	@Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	@Column(name = "uuid")
+	private UUID uuid;
+	
+	@Column(name = "item_name")
+	private String itemName;
+	
+	@Column(name = "price")
+	private Integer price;
+	
+	@Column(name = "type")
+	private String type;
 
-        @Column(name = "item_name")
-        @NotNull
-        @Size(max = 30)
-        private String itemName;
+	public ItemEntity() {
+	   super();	
+	}
+	
+	public Integer getId() {
+		return id;
+	}
 
-        @Column(name="price")
-        @NotNull
-        private Integer price;
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-        public long getId() {
-            return id;
-        }
+	public UUID getUuid() {
+		return uuid;
+	}
 
-        public void setId(long id) {
-            this.id = id;
-        }
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
 
-        public String getUuid() {
-            return uuid;
-        }
+	public String getItemName() {
+		return itemName;
+	}
 
-        public void setUuid(String uuid) {
-            this.uuid = uuid;
-        }
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 
-        public String getItemName() {
-            return itemName;
-        }
+	public Integer getPrice() {
+		return price;
+	}
 
-        public void setItemName(String itemName) {
-            this.itemName = itemName;
-        }
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
 
-        public Integer getPrice() {
-            return price;
-        }
+	public String getType() {
+		return type;
+	}
 
-        public void setPrice(Integer price) {
-            this.price = price;
-        }
-
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	
 }

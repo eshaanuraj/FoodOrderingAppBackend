@@ -19,7 +19,7 @@ public class CouponNotFoundException extends Exception {
     public void printStackTrace() {
         super.printStackTrace();
     }
-
+ 
     @Override
     public void printStackTrace(PrintStream s) {
         super.printStackTrace(s);

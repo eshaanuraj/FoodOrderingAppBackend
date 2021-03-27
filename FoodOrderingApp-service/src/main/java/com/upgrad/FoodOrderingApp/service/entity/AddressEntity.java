@@ -1,25 +1,43 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.io.Serializable;
 
 
 @Entity
 @Table (name = "address",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
 @NamedQueries({
 
-        @NamedQuery(name = "getAddressById",query = "SELECT a from AddressEntity a where a.id = :id"),
+        @NamedQuery(name = "getAddressByUuid",query = "SELECT a from AddressEntity a where a.uuid = :uuid"),
 })
 
 
 public class AddressEntity implements Serializable {
 
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
+
+	@Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,6 +72,7 @@ public class AddressEntity implements Serializable {
     private StateEntity state;
 
     public AddressEntity(){
+    	
     }
 
     public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
@@ -130,10 +149,5 @@ public class AddressEntity implements Serializable {
         this.state = state;
     }
 
-    public String getFlatBuildingNumber() {
-        return flatBuilNo;
-    }
-    public void setFlatBuildingNumber(String flatBuilNo) {
-        this.flatBuilNo = flatBuilNo;
-    }
+
 }
