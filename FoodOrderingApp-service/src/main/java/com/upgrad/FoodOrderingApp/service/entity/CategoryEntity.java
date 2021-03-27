@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "category", schema = "public")
 @NamedQueries({
-
+        @NamedQuery(name = "getAllCategories", query = "select c from CategoryEntity c order by c.categoryName"),
 })
 public class CategoryEntity {
     @Id
