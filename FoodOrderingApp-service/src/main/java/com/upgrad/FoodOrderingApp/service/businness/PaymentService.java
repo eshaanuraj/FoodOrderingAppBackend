@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
@@ -19,4 +20,10 @@ public class PaymentService {
     public List<PaymentEntity> getAllPaymentMethods() {
         return paymentDao.getAllPaymentMethods();
     }
+    
+    
+    public PaymentEntity getPaymentByUuid(UUID uuid) {
+    	return paymentDao.getPaymentByUuid(uuid);
+    }
+    
 }

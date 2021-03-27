@@ -59,9 +59,9 @@ public class OrderEntity implements Serializable{
     @Column(name="date")
     private Date orderedDate;
     
-    //@ManyToOne
-    //@JoinColumn(name="payment_id")
-    //private PaymentEntity payment;
+    @ManyToOne
+    @JoinColumn(name="payment_id")
+    private PaymentEntity payment;
     
     @ManyToOne
     @JoinColumn(name="customer_id")
@@ -164,6 +164,15 @@ public class OrderEntity implements Serializable{
 	public void setOrderItems(List<OrderItemEntity> orderItems) {
 		this.orderItems = orderItems;
 	}
+
+	public PaymentEntity getPayment() {
+		return payment;
+	}
+
+	public void setPayment(PaymentEntity payment) {
+		this.payment = payment;
+	}
     
+	
 
 }

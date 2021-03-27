@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.upgrad.FoodOrderingApp.api.model.CouponDetailsResponse;
@@ -36,6 +35,7 @@ import com.upgrad.FoodOrderingApp.api.model.SaveOrderResponse;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
 import com.upgrad.FoodOrderingApp.service.businness.OrderService;
+import com.upgrad.FoodOrderingApp.service.businness.PaymentService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
@@ -44,6 +44,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.PaymentEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
@@ -65,6 +66,9 @@ public class OrderController {
 	
 	@Autowired
 	private AddressService addressService;
+	
+	@Autowired
+	private PaymentService paymentService;
 	
 	
 	@Autowired
@@ -241,11 +245,13 @@ public class OrderController {
     }
     
     
-    //Need to complete this
     private OrderListPayment getOrderListPayment(OrderEntity orderEntity) {
     	
+    	PaymentEntity paymentEntity = orderEntity.getPayment(); 
+    	
     	OrderListPayment orderListPayment = new OrderListPayment();
-    	//orderListPayment.setId(orderEntity.get);
+    	orderListPayment.setId(UUID.fromString(paymentEntity.getUuid())); 
+    	orderListPayment.setPaymentName(paymentEntity.getPaymentName()); 
     	
     	return orderListPayment;
     }
@@ -256,8 +262,8 @@ public class OrderController {
     @RequestMapping(method = RequestMethod.POST, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SaveOrderResponse> saveOrder(@RequestHeader("authorization") final String authorization,
     		SaveOrderRequest saveOrderRequest) throws  AuthenticationFailedException, AuthorizationFailedException,
-             AddressNotFoundException, RestaurantNotFoundException, CouponNotFoundException, ItemNotFoundException {  
- 
+             AddressNotFoundException, RestaurantNotFoundException, CouponNotFoundException, ItemNotFoundException, PaymentMethodNotFoundException {  
+  
         String[] splitText = authorization.split("Basic "); 
         byte[] decoder = Base64.getDecoder().decode(splitText[0]);
         String decodedText = new String(decoder);
@@ -312,10 +318,13 @@ public class OrderController {
 			}
 			orderEntity.setRestaurant(restaurantByUUID); 
             
+			
+			PaymentEntity paymentByUUID = paymentService.getPaymentByUuid(paymentId); 
 			//Set Payment Object in OrderEntity as well 
-//			if(paymentByUUID == null) {
-//				throw new PaymentMethodNotFoundException("PNF-002","No payment method found by this id");
-//			}
+			if(paymentByUUID == null) {
+				throw new PaymentMethodNotFoundException("PNF-002","No payment method found by this id");
+			}
+			orderEntity.setPayment(paymentByUUID); 
 			
 			orderEntity.setUuid(UUID.randomUUID().toString());  
 			

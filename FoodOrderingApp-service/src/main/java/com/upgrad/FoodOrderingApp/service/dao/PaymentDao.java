@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class PaymentDao {
@@ -22,4 +23,16 @@ public class PaymentDao {
             return null;
         }
     }
+
+	public PaymentEntity getPaymentByUuid(UUID uuid) { 
+		// TODO Auto-generated method stub
+
+        try {
+            return entityManager.createNamedQuery("getPaymentbyUuid", PaymentEntity.class).setParameter("uuid",uuid.toString()).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+        
+	}
+	
 }
