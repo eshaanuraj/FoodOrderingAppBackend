@@ -4,10 +4,8 @@ import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
 import com.upgrad.FoodOrderingApp.service.businness.StateService;
-import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
-import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
-import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
+import com.upgrad.FoodOrderingApp.service.entity.*;
+import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -97,8 +95,9 @@ public class RestaurantController {
         // return response entity with RestaurantLists(details) and Http status
         return new ResponseEntity<RestaurantListResponse>(restaurantListResponse, HttpStatus.OK);
     }
-    /**
-     *
+
+    /** Implementation of getRestaurantsByName endpoint.
+     * This method exposes the endpoint /restaurant/name/{restaurant_name}
      * @param restaurant_name
      * @return List of all restaurants matched with given restaurant name
      * @throws RestaurantNotFoundException - when restaurant name field is empty
@@ -168,5 +167,6 @@ public class RestaurantController {
         // return response entity with RestaurantLists(details) and Http status
         return new ResponseEntity<RestaurantListResponse>(restaurantListResponse, HttpStatus.OK);
     }
+
 
 }

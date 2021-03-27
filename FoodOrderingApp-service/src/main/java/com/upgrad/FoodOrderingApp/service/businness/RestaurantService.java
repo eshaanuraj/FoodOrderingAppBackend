@@ -25,14 +25,14 @@ public class RestaurantService {
 
     /* This method will get restaurants By Rating and returns list of RestaurantEntity
       Throws exception with error code and error message.
-      */
+
     public List<RestaurantEntity> getRestaurantsByRating(){
 
         //This Method will call restaurantsByRating from restaurantDao to get list of RestaurantEntity
         List<RestaurantEntity> restaurantEntities = restaurantDao.getRestaurantsByRating();
         return restaurantEntities;
     }
-
+*/
     /* This method will get restaurants By Name and returns list of RestaurantEntity. This method takes Restaurant name as parameter.
     In case of an error, throws exception with error code and error message.
     */
@@ -64,5 +64,9 @@ public class RestaurantService {
         return restaurantEntity;
     }
 
+    // Method to get the restaurants by the categoryUUID as input parameter
+    public List<RestaurantCategoryEntity> getRestaurantByCategoryId(final Integer categoryID) {
+        return restaurantDao.getRestaurantByCategoryId(categoryID);
+    }
 
 }

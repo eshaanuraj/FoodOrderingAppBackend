@@ -1,6 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
 
+import com.upgrad.FoodOrderingApp.service.entity.RestaurantCategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ public class RestaurantDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    //Method to get the list of restaurant by ratings from db, returns null on error
+  /*  //Method to get the list of restaurant by ratings from db, returns null on error
     public List<RestaurantEntity> getRestaurantsByRating(){
         try{
             List<RestaurantEntity> restaurantEntities = entityManager.createNamedQuery("getRestaurantsByRating",RestaurantEntity.class).getResultList();
@@ -22,6 +23,8 @@ public class RestaurantDao {
             return null;
         }
     }
+    */
+
     /**
      * Method to get all Restaurants as List.
      * @return List<RestaurantEntity>
@@ -48,14 +51,20 @@ public class RestaurantDao {
     public List<RestaurantEntity> getRestaurantsByName(String restaurantName) {
         try {
             String restaurantNameLCase = "%"+restaurantName.toLowerCase()+"%"; // to make a check with lower
-            List<RestaurantEntity> restaurantEntities = entityManager.createNamedQuery("getRestaurantsByName", RestaurantEntity.class).setParameter("restaurant_name_low",restaurantNameLCase).getResultList();
+            List<RestaurantEntity> restaurantEntities = entityManager.createNamedQuery("getRestaurantByName", RestaurantEntity.class).setParameter("restaurantName",restaurantNameLCase).getResultList();
             return restaurantEntities;
         }catch (NoResultException nre){
             return null;
         }
 
     }
-
-
+    //To get the list of restaurant by Category Uuid from db, returns null on error
+    public List<RestaurantCategoryEntity> getRestaurantByCategoryId(final Integer categoryID) {
+        try {
+            return entityManager.createNamedQuery("getRestaurantsByCategoryId", RestaurantCategoryEntity.class).setParameter("id",categoryID).getResultList();
+        } catch(NoResultException nre) {
+            return null;
+        }
+    }
 
 }
