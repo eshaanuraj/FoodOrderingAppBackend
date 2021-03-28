@@ -39,7 +39,7 @@ public class RestExceptionHandler {
     // Handle Exceptions related to Category API's
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> categoryNotFoundException(CategoryNotFoundException categoryNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(categoryNotFoundException.getCode()).message(categoryNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(categoryNotFoundException.getCode()).message(categoryNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     
 
