@@ -26,7 +26,7 @@ public class RestExceptionHandler {
     // Handle all exceptions raised during authorization
     @ExceptionHandler(AuthorizationFailedException.class)
     public ResponseEntity<ErrorResponse> authorizationFailedException(AuthorizationFailedException authrFailedException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(authrFailedException.getCode()).message(authrFailedException.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(authrFailedException.getCode()).message(authrFailedException.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
     // Handle all exceptions raised during update of customer details
@@ -76,7 +76,5 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> paymentMethodNotFoundException(PaymentMethodNotFoundException paymentMethodNotFoundException, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(paymentMethodNotFoundException.getCode()).message(paymentMethodNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
     }
-    
- 
-    
+
 }
