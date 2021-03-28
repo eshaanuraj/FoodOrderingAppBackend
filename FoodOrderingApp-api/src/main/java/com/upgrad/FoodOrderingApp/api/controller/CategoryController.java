@@ -48,8 +48,8 @@ public class CategoryController {
     }
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.GET, path = "/category/id", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CategoryDetailsResponse>getCategoryDetails(@RequestHeader("UUID") final String uuid) throws CategoryNotFoundException {
+    @RequestMapping(method = RequestMethod.GET, path = "/category/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CategoryDetailsResponse>getCategoryDetails(@PathVariable("id") final String id) throws CategoryNotFoundException {
 
         CategoryEntity category;
         List<ItemEntity> itemEntityList = new ArrayList<>();
@@ -57,7 +57,7 @@ public class CategoryController {
         CategoryDetailsResponse categoryDetailsResponse = new CategoryDetailsResponse();
 
         // Get the Category corresponding to the UUID
-        category = categoryService.getCategoryById(uuid);
+        category = categoryService.getCategoryById(id);
 
         // Get the list of items corresponding to the category
         itemEntityList = categoryService.getItemsByCategory(category);
