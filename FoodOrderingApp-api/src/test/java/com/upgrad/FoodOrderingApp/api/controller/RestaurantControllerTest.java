@@ -8,6 +8,7 @@ import com.upgrad.FoodOrderingApp.service.businness.CategoryService;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
 import com.upgrad.FoodOrderingApp.service.businness.ItemService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
+import com.upgrad.FoodOrderingApp.service.entity.*;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.InvalidRatingException;
@@ -398,7 +399,7 @@ public class RestaurantControllerTest {
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
         verify(mockRestaurantService, times(1)).restaurantByUUID(restaurantId);
         verify(mockRestaurantService, times(1))
-                .updateRestaurantRating(restaurantEntity, -5.5);
+                .updateRestaurantDetails (restaurantEntity, -5.5);
     }
 
     //This test case passes when you have handled the exception of trying to update restaurant rating while the rating
@@ -458,11 +459,12 @@ public class RestaurantControllerTest {
         final String restaurantId = UUID.randomUUID().toString();
         restaurantEntity.setUuid(restaurantId);
         restaurantEntity.setAddress(addressEntity);
-        restaurantEntity.setAvgPrice(123);
+        restaurantEntity.setAvgPriceForTwo(123);
         restaurantEntity.setCustomerRating(3.4);
-        restaurantEntity.setNumberCustomersRated(200);
+        restaurantEntity.setNumCustomersRated(200);
         restaurantEntity.setPhotoUrl("someurl");
         restaurantEntity.setRestaurantName("Famous Restaurant");
         return restaurantEntity;
     }
-}*/
+}
+*/

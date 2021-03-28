@@ -1,7 +1,8 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
+import com.upgrad.FoodOrderingApp.api.model.ItemList;
+
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class ItemEntity implements Serializable{
 	private Integer id;
 	
 	@Column(name = "uuid")
-	private UUID uuid;
+	private String uuid;
 	
 	@Column(name = "item_name")
 	private String itemName;
@@ -43,8 +44,10 @@ public class ItemEntity implements Serializable{
 	@Column(name = "price")
 	private Integer price;
 	
-	@Column(name = "type")
-	private String type;
+	//@Column(name = "type")
+	//private String type;
+
+	private ItemList.ItemTypeEnum type;
 
 	public ItemEntity() {
 	   super();	
@@ -58,11 +61,11 @@ public class ItemEntity implements Serializable{
 		this.id = id;
 	}
 
-	public UUID getUuid() {
+	public String getUuid() {
 		return uuid;
 	}
 
-	public void setUuid(UUID uuid) {
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 
@@ -82,13 +85,12 @@ public class ItemEntity implements Serializable{
 		this.price = price;
 	}
 
-	public String getType() {
+	public ItemList.ItemTypeEnum getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(ItemList.ItemTypeEnum type) {
 		this.type = type;
 	}
-	
-	
+
 }

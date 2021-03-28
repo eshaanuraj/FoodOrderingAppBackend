@@ -68,7 +68,7 @@ public class CategoryController {
         for (ItemEntity itemEntity : itemEntityList) {
             ItemList item = new ItemList();
 
-            item.setId(itemEntity.getUuid());
+            item.setId(UUID.fromString(itemEntity.getUuid()));
             item.setItemName(itemEntity.getItemName());
             item.setPrice(itemEntity.getPrice());
             itemLists.add(item);
