@@ -76,7 +76,14 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> paymentMethodNotFoundException(PaymentMethodNotFoundException paymentMethodNotFoundException, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(paymentMethodNotFoundException.getCode()).message(paymentMethodNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
     }
-    
- 
-    
+    // Handle Exceptions related to Restaurant API's
+    @ExceptionHandler(InvalidRatingException.class)
+    public ResponseEntity<ErrorResponse> invalidRatingException(InvalidRatingException exc ,WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse()
+                .code(exc.getCode())
+                .message(exc.getErrorMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+
 }
