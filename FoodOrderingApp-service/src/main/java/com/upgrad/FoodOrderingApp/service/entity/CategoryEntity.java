@@ -2,6 +2,8 @@ package com.upgrad.FoodOrderingApp.service.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "category", schema = "public")
@@ -45,5 +47,16 @@ public class CategoryEntity {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "category_item",
+            joinColumns = @JoinColumn(name = "category_id", referencedColumnName="id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "item_id", referencedColumnName="id", nullable = false)
+    )
+    private List<ItemEntity> itemEntities =new ArrayList<>();
+
+    public List<ItemEntity> getItemEntities() {
+        return itemEntities;
     }
 }
