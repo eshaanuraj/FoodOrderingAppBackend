@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
         }
 )
 
-
 public class PaymentEntity {
     @Id
     @Column(name = "id")
