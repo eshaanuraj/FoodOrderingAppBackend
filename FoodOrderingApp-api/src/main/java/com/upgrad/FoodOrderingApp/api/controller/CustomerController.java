@@ -6,10 +6,7 @@ import com.upgrad.FoodOrderingApp.service.businness.SignupBusinessService;
 import com.upgrad.FoodOrderingApp.service.businness.UpdateBusinessService;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
-import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,8 +35,16 @@ public class CustomerController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/customer/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SignupCustomerResponse> signup(final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
+    public ResponseEntity<SignupCustomerResponse> signup(@RequestBody(required = false) final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
         CustomerEntity customerEntity = new CustomerEntity();
+
+        // Except for Lastname all fields should be non-null
+        if ((signupCustomerRequest.getFirstName() == null) || (signupCustomerRequest.getFirstName().equals("")) ||
+                (signupCustomerRequest.getEmailAddress() == null) || (signupCustomerRequest.getEmailAddress().equals("")) ||
+                (signupCustomerRequest.getPassword() == null ) || (signupCustomerRequest.getPassword().equals("")) ||
+                (signupCustomerRequest.getContactNumber() == null) || signupCustomerRequest.getContactNumber().equals("")) {
+            throw new SignUpRestrictedException("SGR-005", "Except last name all fields should be filled");
+        }
         customerEntity.setUuid(UUID.randomUUID().toString());
         customerEntity.setFirstName(signupCustomerRequest.getFirstName());
         customerEntity.setLastName(signupCustomerRequest.getLastName());
@@ -60,7 +65,7 @@ public class CustomerController {
         String[] splitText = authorization.split("Basic ");
         LoginResponse loginResponse = null;
         HttpHeaders headers = new HttpHeaders();
-        byte[] decoder = Base64.getDecoder().decode(splitText[0]);
+        byte[] decoder = Base64.getDecoder().decode(splitText[1]);
         String decodedText = new String(decoder);
         String[] decodedTextArray = decodedText.split(":");
         if (decodedTextArray.length == 2) {
@@ -91,17 +96,27 @@ public class CustomerController {
 
         CustomerAuthTokenEntity logout = authenticationService.logout(authorization);
 
-        LogoutResponse logoutResponse = new LogoutResponse().id(logout.getUuid()).message("LOGGED OUT SUCCESSFULLY");
+        LogoutResponse logoutResponse = new LogoutResponse().id(logout.getCustomer().getUuid()).message("LOGGED OUT SUCCESSFULLY");
         return new ResponseEntity<LogoutResponse>(logoutResponse, HttpStatus.OK);
 
     }
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT, path = "/customer", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UpdateCustomerResponse> update(@RequestHeader("authorization") final String authorization, final UpdateCustomerRequest updateCustomerRequest) throws AuthorizationFailedException, UpdateCustomerException {
+    public ResponseEntity<UpdateCustomerResponse> update(@RequestHeader("authorization") final String authorization, @RequestBody(required = false) final UpdateCustomerRequest updateCustomerRequest) throws AuthorizationFailedException, UpdateCustomerException {
         CustomerEntity customer;
 
-        customer = updateBusinessService.update(authorization, updateCustomerRequest.getFirstName(), updateCustomerRequest.getLastName());
+        if ((updateCustomerRequest.getFirstName() == null) || (updateCustomerRequest.getFirstName().equals(""))){
+            throw new UpdateCustomerException("UCR-002", "First name field should not be empty");
+        }
+
+        customer = updateBusinessService.getCustomer(authorization);
+
+        customer.setFirstName(updateCustomerRequest.getFirstName());
+        if ((updateCustomerRequest.getLastName() == null) || (updateCustomerRequest.getLastName().equals(""))) {
+            customer.setLastName(updateCustomerRequest.getLastName());
+        }
+        customer = updateBusinessService.updateCustomer(customer);
 
         UpdateCustomerResponse updateCustomerResponse = new UpdateCustomerResponse().id(customer.getUuid()).status("CUSTOMER DETAILS UPDATED SUCCESSFULLY").
                 firstName(customer.getFirstName()).lastName(customer.getLastName());
@@ -111,13 +126,19 @@ public class CustomerController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT, path = "/customer/password", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestHeader("authorization") final String authorization, final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestHeader("authorization") final String authorization, @RequestBody(required = false) final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
         CustomerEntity customer;
 
-        customer = updateBusinessService.updatePassword(authorization, updatePasswordRequest.getOldPassword(), updatePasswordRequest.getNewPassword());
+        if ((updatePasswordRequest.getOldPassword() == null) || (updatePasswordRequest.getNewPassword() == null) ||
+                (updatePasswordRequest.getOldPassword().equals("")) ||
+                (updatePasswordRequest.getNewPassword().equals(""))) {
+            System.out.println(updatePasswordRequest.getNewPassword());
+            throw new UpdateCustomerException("UCR-003", "No field should be empty");
+        }
+        customer = updateBusinessService.getCustomer(authorization);
+        customer = updateBusinessService.updateCustomerPassword(updatePasswordRequest.getOldPassword(), updatePasswordRequest.getNewPassword(), customer);
 
         UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse().id(customer.getUuid()).status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
-
         return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse, HttpStatus.OK);
     }
 }

@@ -26,7 +26,7 @@ public class RestExceptionHandler {
     // Handle all exceptions raised during authorization
     @ExceptionHandler(AuthorizationFailedException.class)
     public ResponseEntity<ErrorResponse> authorizationFailedException(AuthorizationFailedException authrFailedException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(authrFailedException.getCode()).message(authrFailedException.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(authrFailedException.getCode()).message(authrFailedException.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
     // Handle all exceptions raised during update of customer details
@@ -39,7 +39,7 @@ public class RestExceptionHandler {
     // Handle Exceptions related to Category API's
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> categoryNotFoundException(CategoryNotFoundException categoryNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(categoryNotFoundException.getCode()).message(categoryNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(categoryNotFoundException.getCode()).message(categoryNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     
 
@@ -84,6 +84,5 @@ public class RestExceptionHandler {
                 .message(exc.getErrorMessage()),
                 HttpStatus.BAD_REQUEST);
     }
-
 
 }
