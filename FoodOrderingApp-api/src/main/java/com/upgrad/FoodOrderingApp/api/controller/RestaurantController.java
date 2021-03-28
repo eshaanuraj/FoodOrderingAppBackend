@@ -278,4 +278,86 @@ public class RestaurantController {
         // Return the RestaurantUpdatedResponse with OK http status
         return new ResponseEntity<RestaurantUpdatedResponse>(restaurantUpdatedResponse, HttpStatus.OK);
     }
+
+    /** Implementation of getRestaurantByID endpoint
+     * This method exposes endpoint of /restaurant/{restaurant_id}
+     * @param restaurant_id
+     * @return Restaurant with details based on given restaurant id
+     * @throws RestaurantNotFoundException - When given restaurant id field is empty
+     */
+    @RequestMapping(method = RequestMethod.GET, path = "/restaurant/{restaurant_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getRestaurantByUUId(@PathVariable String restaurant_id) throws RestaurantNotFoundException {
+
+        // Handle the Is empty case to check if restaurant_id is empty. Throw exception if path variable(restaurant_id) is empty
+        if(restaurant_id == null || restaurant_id.isEmpty() || restaurant_id.equalsIgnoreCase("\"\"")){
+            throw new RestaurantNotFoundException("RNF-002", "Restaurant id field should not be empty");
+        }
+
+        // Get restaurant which matched with given restaurant_id with help of restaurant business service
+        final RestaurantEntity restaurant = restaurantService.restaurantByUUID(restaurant_id);
+
+        // Throw exception if given restaurant_id not matched with any restaurant in DB
+        if(restaurant == null){
+            throw new RestaurantNotFoundException("RNF-001", "No restaurant by this id");
+        }
+
+        // Add the list of restaurant details to RestaurantDetailsResponse
+        RestaurantDetailsResponse details = new RestaurantDetailsResponse();
+        details.setId(UUID.fromString(restaurant.getUuid()));
+        details.setRestaurantName(restaurant.getRestaurantName());
+        details.setPhotoURL(restaurant.getPhotoUrl());
+        details.setCustomerRating(restaurant.getCustomerRating());
+        details.setAveragePrice(restaurant.getAvgPriceForTwo());
+        details.setNumberCustomersRated(restaurant.getNumCustomersRated());
+
+        // Get the address of restaurant from address entity
+        AddressEntity addressEntity = addressService.getAddressById(restaurant.getAddress().getId());
+        RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress();
+
+        responseAddress.setId(UUID.fromString(addressEntity.getUuid()));
+        responseAddress.setFlatBuildingName(addressEntity.getFlatBuilNo());
+        responseAddress.setLocality(addressEntity.getLocality());
+        responseAddress.setCity(addressEntity.getCity());
+        responseAddress.setPincode(addressEntity.getPincode());
+
+        // Set address with state into restaurant obj
+        StateEntity stateEntity = stateService.getStateById(addressEntity.getState().getId());
+        RestaurantDetailsResponseAddressState responseAddressState = new RestaurantDetailsResponseAddressState();
+
+        responseAddressState.setId(UUID.fromString(stateEntity.getUuid()));
+        responseAddressState.setStateName(stateEntity.getStateName());
+        responseAddress.setState(responseAddressState);
+
+        // set the address with state into restaurant obj
+        details.setAddress(responseAddress);
+
+        // Loop through categories and set CategoryEntity  values
+        List<CategoryList> categoryLists = new ArrayList();
+        for (CategoryEntity categoryEntity :restaurant.getCategoryEntities()) {
+            CategoryList categoryListDetail = new CategoryList();
+            categoryListDetail.setId(UUID.fromString(categoryEntity.getUuid()));
+            categoryListDetail.setCategoryName(categoryEntity.getCategoryName());
+
+            // Loop through the items and setting to category
+            List<ItemList> itemLists = new ArrayList();
+            for (ItemEntity itemEntity :categoryEntity.getItemEntities()) {
+                ItemList itemDetail = new ItemList();
+                itemDetail.setId(UUID.fromString(itemEntity.getUuid()));
+                itemDetail.setItemName(itemEntity.getItemName());
+                itemDetail.setPrice(itemEntity.getPrice());
+                itemDetail.setItemType(itemEntity.getType());
+                itemLists.add(itemDetail);
+            }
+            categoryListDetail.setItemList(itemLists);
+
+            // Adding category to category list
+            categoryLists.add(categoryListDetail);
+        }
+
+        // Add category detail to details(Restaurant)
+        details.setCategories(categoryLists);
+
+        // return response entity with RestaurantDetails(details) and Http status
+        return new ResponseEntity<>(details, HttpStatus.OK);
+    }
 }
