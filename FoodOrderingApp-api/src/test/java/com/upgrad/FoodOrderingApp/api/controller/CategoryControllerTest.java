@@ -48,13 +48,14 @@ public class CategoryControllerTest {
         itemEntity.setItemName("myItem");
         itemEntity.setPrice(200);
         //itemEntity.setType(NON_VEG);
+        itemEntity.setType("1");
         final String itemId = UUID.randomUUID().toString();
         itemEntity.setUuid(itemId);
 
         final CategoryEntity categoryEntity = new CategoryEntity();
         final String categoryEntityId = UUID.randomUUID().toString();
         categoryEntity.setUuid(categoryEntityId);
-        //categoryEntity.setItems(Collections.singletonList(itemEntity));
+        categoryEntity.setItems(Collections.singletonList(itemEntity));
 
 
         when(mockCategoryService.getCategoryById("sampleCategoryId")).thenReturn(categoryEntity);

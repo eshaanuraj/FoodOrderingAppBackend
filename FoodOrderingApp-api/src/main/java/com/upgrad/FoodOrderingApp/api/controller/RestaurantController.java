@@ -340,7 +340,7 @@ public class RestaurantController {
 
             // Loop through the items and setting to category
             List<ItemList> itemLists = new ArrayList();
-            for (ItemEntity itemEntity :categoryEntity.getItemEntities()) {
+            for (ItemEntity itemEntity :categoryEntity.getItems()) {
                 ItemList itemDetail = new ItemList();
                 itemDetail.setId(UUID.fromString(itemEntity.getUuid()));
                 itemDetail.setItemName(itemEntity.getItemName());

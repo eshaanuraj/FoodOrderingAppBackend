@@ -37,6 +37,7 @@ public class CategoryService {
     public CategoryEntity getCategoryById(String uuid) throws CategoryNotFoundException{
 
         CategoryEntity categoryEntity;
+        List<ItemEntity> itemEntityList = new ArrayList<>();
 
         // Check if passed UUID is NULL
         if (uuid == null) {
@@ -48,6 +49,11 @@ public class CategoryService {
         if (categoryEntity == null) {
             throw new CategoryNotFoundException("CNF-002", "No category by this id");
         }
+
+        itemEntityList = getItemsByCategory(categoryEntity);
+
+        categoryEntity.setItems(itemEntityList);
+
         return categoryEntity;
     }
 

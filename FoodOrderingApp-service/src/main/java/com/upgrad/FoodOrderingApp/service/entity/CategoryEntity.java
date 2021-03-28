@@ -54,9 +54,13 @@ public class CategoryEntity {
             joinColumns = @JoinColumn(name = "category_id", referencedColumnName="id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "item_id", referencedColumnName="id", nullable = false)
     )
-    private List<ItemEntity> itemEntities =new ArrayList<>();
+    private List<ItemEntity> items =new ArrayList<>();
 
-    public List<ItemEntity> getItemEntities() {
-        return itemEntities;
+    public List<ItemEntity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemEntity> items) {
+        this.items = items;
     }
 }
