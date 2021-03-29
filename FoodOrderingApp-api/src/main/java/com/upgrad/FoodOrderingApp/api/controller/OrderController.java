@@ -240,34 +240,22 @@ public class OrderController {
 		OrderEntity orderEntity = new OrderEntity();
 
 		AddressEntity addressByUuid = addressService.getAddressByUuid(addressId);
-		if (addressByUuid == null) {
-			throw new AddressNotFoundException("ANF-003", "No address by this id");
-		}
 
 		orderEntity.setAddress(addressByUuid);
 
 		orderEntity.setBill(bill.intValue());
 
-		CouponEntity couponByUuid = orderService.getCouponByUuid(couponId.toString());
-		if (couponByUuid == null) {
-			throw new CouponNotFoundException("CPF-002", "No coupon by this id");
-		}
+		CouponEntity couponByUuid = orderService.getCouponByCouponId(couponId.toString());
 		orderEntity.setCoupon(couponByUuid);
 		orderEntity.setCustomer(customerEntity);
 		orderEntity.setDiscount(discount.intValue());
 		orderEntity.setOrderedDate(new Date());
 
 		RestaurantEntity restaurantByUUID = restaurantService.restaurantByUUID(restaurantId.toString());
-		if (restaurantByUUID == null) {
-			throw new RestaurantNotFoundException("RNF-001", "No restaurant by this id");
-		}
+
 		orderEntity.setRestaurant(restaurantByUUID);
 
-		PaymentEntity paymentByUUID = paymentService.getPaymentByUuid(paymentId);
-		// Set Payment Object in OrderEntity as well
-		if (paymentByUUID == null) {
-			throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");
-		}
+		PaymentEntity paymentByUUID = paymentService.getPaymentByUUID(paymentId.toString());
 		orderEntity.setPayment(paymentByUUID);
 
 		orderEntity.setUuid(UUID.randomUUID().toString());
@@ -278,9 +266,6 @@ public class OrderController {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
-			if (itemByUuid == null) {
-				throw new ItemNotFoundException("INF-003", "No item by this id exist");
-			}
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);
 			ordItemEntity.setPrice(itq.getPrice());
@@ -297,7 +282,7 @@ public class OrderController {
 		saveOrderResponse.setStatus("ORDER SUCCESSFULLY PLACED");
 		saveOrderResponse.setId(savedOrder.getUuid());
 
-		return new ResponseEntity<SaveOrderResponse>(saveOrderResponse, HttpStatus.OK);
+		return new ResponseEntity<SaveOrderResponse>(saveOrderResponse, HttpStatus.CREATED);
 
 	}
 

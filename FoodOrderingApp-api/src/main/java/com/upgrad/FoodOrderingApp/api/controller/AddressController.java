@@ -86,7 +86,7 @@ public class AddressController {
 		saveAddressResponse.setId(savedAddress.getUuid()); 
 		saveAddressResponse.setStatus("ADDRESS SUCCESSFULLY REGISTERED");
 
-		return new ResponseEntity<SaveAddressResponse>(saveAddressResponse, HttpStatus.OK);
+		return new ResponseEntity<SaveAddressResponse>(saveAddressResponse, HttpStatus.CREATED);
 
 	}
 
@@ -149,7 +149,7 @@ public class AddressController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.GET, path = "/states", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseEntity<List<StateEntity>> getAllStates() {
 
 		List<StateEntity> allStatesList = addressService.getAllStates();
