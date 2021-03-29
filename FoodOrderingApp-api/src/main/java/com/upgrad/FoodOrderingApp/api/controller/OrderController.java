@@ -265,7 +265,11 @@ public class OrderController {
 		for (ItemQuantity itq : itemQuantities) {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
-			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
+
+			ItemEntity itemByUuid = orderService.getItemByUuid(UUID.fromString(itq.getItemId()));
+			if (itemByUuid == null) {
+				throw new ItemNotFoundException("INF-003", "No item by this id exist");
+			}
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);
 			ordItemEntity.setPrice(itq.getPrice());
