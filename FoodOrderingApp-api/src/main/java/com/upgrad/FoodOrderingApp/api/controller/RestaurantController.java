@@ -328,7 +328,7 @@ public class RestaurantController {
                 itemDetail.setId(UUID.fromString(itemEntity.getUuid()));
                 itemDetail.setItemName(itemEntity.getItemName());
                 itemDetail.setPrice(itemEntity.getPrice());
-                //itemDetail.setItemType(ItemQuantityResponseItem.TypeEnum.valueOf(itemEntity.getType()));
+                itemDetail.setItemType(getItemType(itemEntity.getType()));
                 itemLists.add(itemDetail);
             }
             categoryListDetail.setItemList(itemLists);
@@ -342,5 +342,15 @@ public class RestaurantController {
 
         // return response entity with RestaurantDetails(details) and Http status
         return new ResponseEntity<>(details, HttpStatus.OK);
+    }
+
+    ItemList.ItemTypeEnum getItemType (String type) {
+        if (type.equals("0")) {
+            return ItemList.ItemTypeEnum.VEG;
+        } else if (type.equals("1")) {
+            return ItemList.ItemTypeEnum.NON_VEG;
+        } else { // No proper Type, default to NON-VEG
+            return ItemList.ItemTypeEnum.VEG;
+        }
     }
 }
