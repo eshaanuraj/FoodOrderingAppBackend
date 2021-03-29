@@ -1,8 +1,13 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
+import com.upgrad.FoodOrderingApp.service.dao.CategoryDao;
+import com.upgrad.FoodOrderingApp.service.dao.RestaurantCategoryDao;
 import com.upgrad.FoodOrderingApp.service.dao.RestaurantDao;
+import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
+import com.upgrad.FoodOrderingApp.service.entity.RestaurantCategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.InvalidRatingException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -18,9 +24,13 @@ public class RestaurantService {
     //Handles all data related to the RestaurantEntity
     @Autowired
     RestaurantDao restaurantDao;
-
+    @Autowired
+    CategoryDao categoryDao;
     @Autowired
     CommonService commonService;
+
+    @Autowired
+    RestaurantCategoryDao restaurantCategoryDao;
     // This Method is to get getAllRestaurants endpoint
     public List<RestaurantEntity> getAllRestaurants() {
         return restaurantDao.getAllRestaurants();
@@ -99,5 +109,28 @@ public class RestaurantService {
         RestaurantEntity updatedRestaurantEntity = restaurantDao.updateRestaurantDetails(restaurantEntity);
 
         return updatedRestaurantEntity;
+    }
+
+    public List<RestaurantEntity> getRestaurantByCategoryId(String category_id) throws CategoryNotFoundException {
+        if(category_id == null || category_id == ""){ //Checking for categoryId to be null or empty to throw exception.
+            throw new CategoryNotFoundException("CNF-001","Category id field should not be empty");
+        }
+
+        //Calls getCategoryByUuid of categoryDao to get list of CategoryEntity
+        CategoryEntity categoryEntity = categoryDao.getCategoryById(category_id);
+
+        if(categoryEntity == null){//Checking for categoryEntity to be null or empty to throw exception.
+            throw new CategoryNotFoundException("CNF-002","No category by this id");
+        }
+
+        //Calls getRestaurantByCategory of restaurantCategoryDao to get list of RestaurantCategoryEntity
+        List<RestaurantCategoryEntity> restaurantCategoryEntities = restaurantCategoryDao.getRestaurantByCategory(categoryEntity);
+
+        //Creating new restaurantEntity List and add only the restaurant for the corresponding category.
+        List<RestaurantEntity> restaurantEntities = new LinkedList<>();
+        restaurantCategoryEntities.forEach(restaurantCategoryEntity -> {
+            restaurantEntities.add(restaurantCategoryEntity.getRestaurant());
+        });
+        return restaurantEntities;
     }
 }

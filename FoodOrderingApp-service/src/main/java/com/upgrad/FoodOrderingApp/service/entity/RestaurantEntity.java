@@ -48,7 +48,6 @@ public class RestaurantEntity implements Serializable {
     private String photoUrl;
 
     @Column(name = "customer_rating")
-    @NotNull
     private double customerRating;
 
     @Column(name = "number_of_customers_rated")

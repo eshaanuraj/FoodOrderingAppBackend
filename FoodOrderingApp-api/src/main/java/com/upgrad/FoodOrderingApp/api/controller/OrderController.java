@@ -1,61 +1,21 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
+import com.upgrad.FoodOrderingApp.api.model.*;
+import com.upgrad.FoodOrderingApp.service.businness.*;
+import com.upgrad.FoodOrderingApp.service.entity.*;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.upgrad.FoodOrderingApp.api.model.CouponDetailsResponse;
-import com.upgrad.FoodOrderingApp.api.model.ItemQuantity;
-import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponse;
-import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponseItem;
-import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponseItem.TypeEnum;
-import com.upgrad.FoodOrderingApp.api.model.OrderList;
-import com.upgrad.FoodOrderingApp.api.model.OrderListAddress;
-import com.upgrad.FoodOrderingApp.api.model.OrderListAddressState;
-import com.upgrad.FoodOrderingApp.api.model.OrderListCoupon;
-import com.upgrad.FoodOrderingApp.api.model.OrderListCustomer;
-import com.upgrad.FoodOrderingApp.api.model.OrderListPayment;
-import com.upgrad.FoodOrderingApp.api.model.SaveOrderRequest;
-import com.upgrad.FoodOrderingApp.api.model.SaveOrderResponse;
-import com.upgrad.FoodOrderingApp.service.businness.AddressService;
-import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
-import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
-import com.upgrad.FoodOrderingApp.service.businness.OrderService;
-import com.upgrad.FoodOrderingApp.service.businness.PaymentService;
-import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
-import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.PaymentEntity;
-import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
-import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
-import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
-import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
-import com.upgrad.FoodOrderingApp.service.exception.PaymentMethodNotFoundException;
-import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class OrderController {
@@ -276,7 +236,7 @@ public class OrderController {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 
-			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
+			ItemEntity itemByUuid = orderService.getItemByUuid(UUID.fromString(itq.getItemId()));
 			
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);

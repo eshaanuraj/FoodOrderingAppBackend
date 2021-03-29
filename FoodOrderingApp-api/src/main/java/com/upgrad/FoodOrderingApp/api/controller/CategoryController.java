@@ -71,7 +71,7 @@ public class CategoryController {
             item.setId(UUID.fromString(itemEntity.getUuid()));
             item.setItemName(itemEntity.getItemName());
             item.setPrice(itemEntity.getPrice());
-            item.setItemType(getItemType(itemEntity.getType()));
+            //item.setItemType(getItemType(itemEntity.getType()));
             itemLists.add(item);
         }
         categoryDetailsResponse.setItemList(itemLists);
