@@ -1,12 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
-import com.upgrad.FoodOrderingApp.service.dao.ItemDao;
-import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
-import com.upgrad.FoodOrderingApp.service.dao.OrderItemDao;
-import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.dao.*;
+import com.upgrad.FoodOrderingApp.service.entity.*;
 import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +18,15 @@ public class ItemService {
     @Autowired
     private OrderDao orderDao;
 
+    @Autowired
+    private RestaurantDao restaurantDao;
+
+    @Autowired
+    private CategoryItemDao categoryItemDao;
+    @Autowired
+    private CategoryDao categoryDao;
+    @Autowired
+    private RestaurantItemDao restaurantItemDao;
     @Autowired
     private OrderItemDao orderItemDao;
 
@@ -82,5 +86,34 @@ public class ItemService {
     public List<OrderItemEntity> getItemsByOrder(OrderEntity orderEntity) {
         return orderItemDao.getItemsByOrder(orderEntity);
     }
+
+    public List<ItemEntity> getItemsByCategoryAndRestaurant(String restaurantUuid, String categoryUuid) {
+
+        //Calls getRestaurantByUuid of restaurantDao to get the  RestaurantEntity
+        RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(restaurantUuid);
+
+        //Calls getCategoryByUuid of categoryDao to get the  CategoryEntity
+        CategoryEntity categoryEntity = categoryDao.getCategoryById(categoryUuid);
+
+        //Calls getItemsByRestaurant of restaurantItemDao to get the  list of RestaurantItemEntity
+        List<RestaurantItemEntity> restaurantItemEntities = restaurantItemDao.getItemsByRestaurant(restaurantEntity);
+
+        //Calls getItemsByCategory of categoryItemDao to get the  list of CategoryItemEntity
+        List<CategoryItemEntity> categoryItemEntities = categoryItemDao.getAllItemsByCategory(categoryEntity);
+
+        //Creating list of item entity common to the restaurant and category.
+        List<ItemEntity> itemEntities = new LinkedList<>();
+
+        restaurantItemEntities.forEach(restaurantItemEntity -> {
+            categoryItemEntities.forEach(categoryItemEntity -> {
+                if(restaurantItemEntity.getItem().equals(categoryItemEntity.getItem())){
+                    itemEntities.add(restaurantItemEntity.getItem());
+                }
+            });
+        });
+
+        return itemEntities;
+    }
+
 }
 
