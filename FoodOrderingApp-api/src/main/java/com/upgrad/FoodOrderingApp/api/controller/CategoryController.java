@@ -60,7 +60,7 @@ public class CategoryController {
         category = categoryService.getCategoryById(id);
 
         // Get the list of items corresponding to the category
-        itemEntityList = categoryService.getItemsByCategory(category);
+        itemEntityList = category.getItems();
 
         categoryDetailsResponse.setCategoryName(category.getCategoryName());
         categoryDetailsResponse.setId(UUID.fromString(category.getUuid()));

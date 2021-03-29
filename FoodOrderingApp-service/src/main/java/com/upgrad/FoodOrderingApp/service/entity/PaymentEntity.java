@@ -29,8 +29,21 @@ public class PaymentEntity {
     @NotNull
     @Size(max = 255)
     private String paymentName;
+    
+    
 
-    public Long getId() {
+    public PaymentEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public PaymentEntity(String uuid, String paymentName) { 
+		super();
+		this.uuid = uuid;
+		this.paymentName = paymentName;
+	}
+
+	public Long getId() {
         return id;
     }
 

@@ -1,10 +1,22 @@
-/*
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upgrad.FoodOrderingApp.api.model.CustomerOrderResponse;
+import com.upgrad.FoodOrderingApp.api.model.CustomerOrderResponse; 
 import com.upgrad.FoodOrderingApp.api.model.ItemQuantity;
 import com.upgrad.FoodOrderingApp.api.model.SaveOrderRequest;
+import com.upgrad.FoodOrderingApp.service.businness.AddressService;
+import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.businness.OrderService;
+import com.upgrad.FoodOrderingApp.service.businness.PaymentService;
+import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
+import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.PaymentEntity;
+import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
+import static org.junit.Assert.assertEquals;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -51,8 +64,8 @@ public class OrderControllerTest {
     @MockBean
     private RestaurantService mockRestaurantService;
 
-    @MockBean
-    private ItemService mockItemService;
+//    @MockBean
+//    private ItemService mockItemService;
 
     // ------------------------------------------ POST /order ------------------------------------------
 
@@ -68,8 +81,8 @@ public class OrderControllerTest {
         final SaveOrderRequest saveOrderRequest = getSaveOrderRequest();
         when(mockPaymentService.getPaymentByUUID(saveOrderRequest.getPaymentId().toString()))
                 .thenReturn(new PaymentEntity());
-        when(mockAddressService.getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity))
-                .thenReturn(new AddressEntity());
+        when(mockAddressService.getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity)) 
+                .thenReturn(new AddressEntity()); 
         when(mockRestaurantService.restaurantByUUID(saveOrderRequest.getRestaurantId().toString()))
                 .thenReturn(new RestaurantEntity());
         when(mockOrderService.getCouponByCouponId(saveOrderRequest.getCouponId().toString()))
@@ -93,7 +106,7 @@ public class OrderControllerTest {
         verify(mockPaymentService, times(1))
                 .getPaymentByUUID(saveOrderRequest.getPaymentId().toString());
         verify(mockAddressService, times(1))
-                .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
+                .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity); 
         verify(mockRestaurantService, times(1))
                 .restaurantByUUID(saveOrderRequest.getRestaurantId().toString());
         verify(mockOrderService, times(1))
@@ -229,7 +242,7 @@ public class OrderControllerTest {
         verify(mockAddressService, times(1))
                 .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
         verify(mockRestaurantService, times(0)).restaurantByUUID(anyString());
-        verify(mockOrderService, times(1)).getCouponByCouponId(anyString());
+        verify(mockOrderService, times(1)).getCouponByUuid(anyString());
         verify(mockOrderService, times(0)).saveOrder(any());
         verify(mockOrderService, times(0)).saveOrderItem(any());
     }
@@ -297,12 +310,12 @@ public class OrderControllerTest {
         verify(mockCustomerService, times(1))
                 .getCustomer("database_accesstoken2");
         verify(mockPaymentService, times(1))
-                .getPaymentByUUID(saveOrderRequest.getPaymentId().toString());
+                .getPaymentByUuid(saveOrderRequest.getPaymentId());
         verify(mockAddressService, times(1))
                 .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
         verify(mockRestaurantService, times(1))
                 .restaurantByUUID(saveOrderRequest.getRestaurantId().toString());
-        verify(mockOrderService, times(1)).getCouponByCouponId(anyString());
+        verify(mockOrderService, times(1)).getCouponByUuid(anyString());
         verify(mockOrderService, times(0)).saveOrder(any());
         verify(mockOrderService, times(0)).saveOrderItem(any());
     }
@@ -445,7 +458,7 @@ public class OrderControllerTest {
         when(mockOrderService.getCouponByCouponName("myCoupon")).thenReturn(couponEntity);
 
         mockMvc
-                .perform(get("/order/coupon/myCoupon")
+                .perform(get("/order/coupon/BEST20")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .header("authorization", "Bearer database_accesstoken2"))
                 .andExpect(status().isOk())
@@ -542,7 +555,7 @@ public class OrderControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("CPF-001"));
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
-        verify(mockOrderService, times(1)).getCouponByCouponName("myCoupon");
+        verify(mockOrderService, times(1)).getCouponByName("myCoupon");
     }
 
     // ------------------------------------------ POJO Builder ------------------------------------------
@@ -565,7 +578,7 @@ public class OrderControllerTest {
         final UUID couponId = UUID.randomUUID();
         request.setCouponId(couponId);
 
-        final ItemQuantity itemQuantity = new ItemQuantity();
+        final ItemQuantity itemQuantity = new ItemQuantity();  
         itemQuantity.setPrice(786);
         itemQuantity.setQuantity(1);
         final UUID itemId = UUID.randomUUID();
@@ -585,27 +598,28 @@ public class OrderControllerTest {
                 "someLocality", "someCity", "100000", stateEntity);
 
         final String couponId = UUID.randomUUID().toString();
-        final CouponEntity couponEntity = new CouponEntity(couponId, "someCoupon", 10);
+        final CouponEntity couponEntity = new CouponEntity(couponId, "someCoupon", 10); 
 
         final String paymentId = UUID.randomUUID().toString();
         final PaymentEntity paymentEntity = new PaymentEntity(paymentId, "spmePayment");
 
-        final RestaurantEntity restaurantEntity = new RestaurantEntity();
+        final RestaurantEntity restaurantEntity = new RestaurantEntity(); 
         final String restaurantId = UUID.randomUUID().toString();
         restaurantEntity.setUuid(restaurantId);
         restaurantEntity.setAddress(addressEntity);
-        restaurantEntity.setAvgPrice(123);
-        restaurantEntity.setCustomerRating(3.4);
-        restaurantEntity.setNumberCustomersRated(200);
+        restaurantEntity.setAvgPriceForTwo(123);
+        restaurantEntity.setCustomerRating(BigDecimal.valueOf(3.4));
+        restaurantEntity.setNumCustomersRated(200);
         restaurantEntity.setPhotoUrl("someurl");
         restaurantEntity.setRestaurantName("Famous Restaurant");
 
 
         final String orderId = UUID.randomUUID().toString();
         final Date orderDate = new Date();
-        return new OrderEntity(orderId, 200.50, couponEntity, 10.0,
-                orderDate, paymentEntity, customerEntity, addressEntity, restaurantEntity);
+        //200.50, 10.0
+        return new OrderEntity(orderId, 200, couponEntity, 10,
+                orderDate, paymentEntity, customerEntity, addressEntity, restaurantEntity);  
     }
 
 
-}*/
+}

@@ -35,6 +35,26 @@ public class CouponEntity implements Serializable{
 	
 	@Column(name="percent")
 	private Integer percent;
+	
+	
+	public CouponEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public CouponEntity(UUID uuid, String couponName, Integer percent) {
+		super();
+		this.uuid = uuid;
+		this.couponName = couponName;
+		this.percent = percent;
+	}
+
+	public CouponEntity(String uuid, String couponName, Integer percent) {
+		super();
+		this.uuid = UUID.fromString(uuid); 
+		this.couponName = couponName;
+		this.percent = percent;
+	}
 
 	public long getId() {
 		return id;

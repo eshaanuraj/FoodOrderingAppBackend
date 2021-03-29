@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,6 +103,9 @@ public class AddressService {
 		return addressDao.getAddressByUuid(uuid);
 	}
 
+	public AddressEntity getAddressByUUID(String uuid,CustomerEntity customerEntity) {
+		return addressDao.getAddressByUuid(uuid);
+	}
 
 
     @Transactional
@@ -109,4 +113,30 @@ public class AddressService {
         return addressDao.getAddressById(addressId);
     }
 
+
+	public  List<AddressEntity>  getAllAddress(CustomerEntity customerEntity) { 
+		return getAllSavedAddresses(customerEntity);
+		
+	}
+
+
+	public StateEntity getStateByUUID(String uuid) { 
+		return stateDao.getStateEntityByUuid(uuid);
+	}
+
+
+	public AddressEntity deleteAddress(AddressEntity addressEntity) { 
+		// TODO Auto-generated method stub
+		AddressEntity deletedAddress = addressDao.deleteAddress(addressEntity); 
+		return deletedAddress;
+	}
+
+
+	public AddressEntity saveAddress(CustomerEntity customerEntity, AddressEntity addressEntity) { 
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
 }

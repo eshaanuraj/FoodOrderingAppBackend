@@ -81,4 +81,11 @@ public class AddressDao {
         }
     }
 
+
+	public AddressEntity deleteAddress(AddressEntity addressEntity) { 
+		// TODO Auto-generated method stub
+		entityManager.remove(addressEntity); 
+		return addressEntity;
+	}
+
 }

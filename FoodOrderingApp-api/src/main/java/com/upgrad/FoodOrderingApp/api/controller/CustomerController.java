@@ -113,7 +113,7 @@ public class CustomerController {
         customer = updateBusinessService.getCustomer(authorization);
 
         customer.setFirstName(updateCustomerRequest.getFirstName());
-        if ((updateCustomerRequest.getLastName() == null) || (updateCustomerRequest.getLastName().equals(""))) {
+        if ((updateCustomerRequest.getLastName() != null) && (updateCustomerRequest.getLastName().equals("")==false)) {
             customer.setLastName(updateCustomerRequest.getLastName());
         }
         customer = updateBusinessService.updateCustomer(customer);
@@ -132,7 +132,6 @@ public class CustomerController {
         if ((updatePasswordRequest.getOldPassword() == null) || (updatePasswordRequest.getNewPassword() == null) ||
                 (updatePasswordRequest.getOldPassword().equals("")) ||
                 (updatePasswordRequest.getNewPassword().equals(""))) {
-            System.out.println(updatePasswordRequest.getNewPassword());
             throw new UpdateCustomerException("UCR-003", "No field should be empty");
         }
         customer = updateBusinessService.getCustomer(authorization);

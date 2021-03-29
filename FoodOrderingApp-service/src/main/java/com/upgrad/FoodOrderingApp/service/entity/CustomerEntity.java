@@ -8,7 +8,8 @@ import javax.validation.constraints.Size;
 @NamedQueries(
         {
                 // Query to retrieve records matching a given contact number
-                @NamedQuery(name = "getCustomerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber=:contact_number")
+                @NamedQuery(name = "getCustomerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber=:contact_number"),
+                @NamedQuery(name = "getCustomerByUUID", query = "select u from CustomerEntity u where u.uuid=:uuid")
         }
 )
 
