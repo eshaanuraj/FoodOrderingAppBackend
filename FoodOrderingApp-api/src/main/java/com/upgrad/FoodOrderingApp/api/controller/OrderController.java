@@ -62,7 +62,7 @@ public class OrderController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<OrderList>> getPastOrdersOfUser(
+	public ResponseEntity<CustomerOrderResponse> getPastOrdersOfUser(
 			@RequestHeader("authorization") final String authorization)
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException {
 
@@ -94,7 +94,11 @@ public class OrderController {
 	
 			}
         }
-		return new ResponseEntity<List<OrderList>>(completeOrderList, HttpStatus.OK);
+
+        CustomerOrderResponse response = new CustomerOrderResponse();
+        response.setOrders(completeOrderList); 
+		return new ResponseEntity<CustomerOrderResponse>(response, HttpStatus.OK);
+
 
 	}
 
@@ -236,7 +240,7 @@ public class OrderController {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 
-			ItemEntity itemByUuid = orderService.getItemByUuid(UUID.fromString(itq.getItemId()));
+			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
 			
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);
