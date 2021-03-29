@@ -29,12 +29,11 @@ public class AddressService {
 	private StateDao stateDao;
 	
 	
-	public String saveCustomerAddress(String stateUuid,CustomerEntity customerEntity, AddressEntity addressEntity) 
+	public AddressEntity saveAddress(CustomerEntity customerEntity, AddressEntity addressEntity) 
 			throws SaveAddressException, AddressNotFoundException {
 
 		if(addressEntity.getCity() == null || addressEntity.getFlatBuilNo() == null 
-				|| addressEntity.getLocality() == null || addressEntity.getPincode() == null
-				|| stateUuid == null) {
+				|| addressEntity.getLocality() == null || addressEntity.getPincode() == null) {
 			throw new SaveAddressException("SAR-001", "No field can be empty");
 		}
 		
@@ -43,11 +42,9 @@ public class AddressService {
 			throw new SaveAddressException("SAR-002", "Invalid pincode");
 		}
 		
-		StateEntity stateEntity = stateDao.getStateEntityByUuid(stateUuid); 
-		if(stateEntity == null) {
+		if(addressEntity.getState() == null) {
 			 throw new AddressNotFoundException("ANF-002", "No state by this id"); 
 		}
-		addressEntity.setState(stateEntity); 
 		
 		UUID uuidObj = UUID.randomUUID();
 		addressEntity.setUuid(uuidObj.toString()); 
@@ -59,7 +56,7 @@ public class AddressService {
 		custAddrEntity.setCustomer(customerEntity); 
 		
 		addressDao.saveCustomerAddressEntity(custAddrEntity);
-		return addressEntity.getUuid();  
+		return addressEntity;  
 		
 	}
 	
@@ -109,8 +106,20 @@ public class AddressService {
 		return addressDao.getAddressByUuid(uuid);
 	}
 
-	public AddressEntity getAddressByUUID(String uuid,CustomerEntity customerEntity) {
-		return addressDao.getAddressByUuid(uuid);
+	public AddressEntity getAddressByUUID(String addressUUID,CustomerEntity customerEntity) throws AddressNotFoundException {
+		if (StringUtils.isBlank(addressUUID)) {
+			throw new AddressNotFoundException("ANF-005", "Address id can not be empty");
+		}
+
+		// TODO Auto-generated method stub
+		Integer customerId = customerEntity.getId(); 
+		
+		AddressEntity addressEntity = addressDao.getAddressByUuid(addressUUID);  
+		if(addressEntity == null) {
+			throw new AddressNotFoundException("ANF-003","No address by this id");
+		} 
+       
+		return addressEntity;
 	}
 
 
@@ -120,7 +129,10 @@ public class AddressService {
     }
 
 
-	public StateEntity getStateByUUID(String uuid) { 
+	public StateEntity getStateByUUID(String uuid) throws SaveAddressException {  
+		if(StringUtils.isBlank(uuid)) {
+			throw new SaveAddressException("SAR-001", "No field can be empty");
+		}
 		return stateDao.getStateEntityByUuid(uuid);
 	}
 
@@ -131,11 +143,6 @@ public class AddressService {
 		return deletedAddress;
 	}
 
-
-	public AddressEntity saveAddress(CustomerEntity customerEntity, AddressEntity addressEntity) { 
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 	
