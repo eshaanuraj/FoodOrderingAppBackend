@@ -328,7 +328,7 @@ public class RestaurantController {
                 itemDetail.setId(UUID.fromString(itemEntity.getUuid()));
                 itemDetail.setItemName(itemEntity.getItemName());
                 itemDetail.setPrice(itemEntity.getPrice());
-                itemDetail.setItemType(getItemType(itemEntity.getType()));
+                //itemDetail.setItemType(getItemType(itemEntity.getType()));
                 itemLists.add(itemDetail);
             }
             categoryListDetail.setItemList(itemLists);

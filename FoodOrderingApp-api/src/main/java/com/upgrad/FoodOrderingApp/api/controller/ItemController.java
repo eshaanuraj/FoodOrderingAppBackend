@@ -2,7 +2,6 @@ package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.ItemList;
 import com.upgrad.FoodOrderingApp.api.model.ItemListResponse;
-import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponseItem;
 import com.upgrad.FoodOrderingApp.service.businness.ItemService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
@@ -45,8 +44,10 @@ public class ItemController {
         int itemCount = 0;
 
         for(ItemEntity ie: itemEntityList) {
-            ItemList itemList = new ItemList().id(UUID.fromString(ie.getUuid()))
+
+            ItemList itemList = new ItemList().id(UUID.fromString(ie.getUuid()));
                     .itemName(ie.getItemName()).price(ie.getPrice()).itemType(getItemType(ie.getType()));
+
             itemListResponse.add(itemList);
             itemCount += 1;
             if (itemCount >= 5)
