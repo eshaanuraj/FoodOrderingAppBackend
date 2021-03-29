@@ -16,10 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -58,7 +56,7 @@ public class RestaurantController {
             detail.setId(UUID.fromString(re.getUuid()));
             detail.setRestaurantName(re.getRestaurantName());
             detail.setPhotoURL(re.getPhotoUrl());
-            detail.setCustomerRating(re.getCustomerRating());
+            detail.setCustomerRating(BigDecimal.valueOf(re.getCustomerRating()));
             detail.setAveragePrice(re.getAvgPriceForTwo());
             detail.setNumberCustomersRated(re.getNumCustomersRated());
 
@@ -130,7 +128,7 @@ public class RestaurantController {
             detail.setId(UUID.fromString(n.getUuid()));
             detail.setRestaurantName(n.getRestaurantName());
             detail.setPhotoURL(n.getPhotoUrl());
-            detail.setCustomerRating(n.getCustomerRating());
+            detail.setCustomerRating(BigDecimal.valueOf(n.getCustomerRating()));
             detail.setAveragePrice(n.getAvgPriceForTwo());
             detail.setNumberCustomersRated(n.getNumCustomersRated());
 
@@ -184,73 +182,58 @@ public class RestaurantController {
     @RequestMapping(method = RequestMethod.GET, path = "/restaurant/category/{category_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getRestaurantByCategoryId(@PathVariable String category_id) throws CategoryNotFoundException {
 
-        // Throw exception if path variable(category_id) is empty
-        if(category_id == null || category_id.isEmpty() || category_id.equalsIgnoreCase("\"\"")){
-            throw new CategoryNotFoundException("CNF-001", "Category id field should not be empty");
-        }
+        //Calls restaurantByCategory method of restaurantService to get the list of restaurant entity.
+        List<RestaurantEntity> restaurantEntities = restaurantService.getRestaurantByCategoryId(category_id);
 
-        // Get category which matched with given category_id
-        CategoryEntity matchedCategory = categoryService.getCategoryById(category_id);
+        //Creating restaurant list for the response
+        List<RestaurantList> restaurantLists = new LinkedList<>();
+        for (RestaurantEntity restaurantEntity : restaurantEntities) { //Looping for each restaurant entity in restaurantEntities
 
-        // Throw exception if given category_id not matched with any category in DB
-        if(matchedCategory == null){
-            throw new CategoryNotFoundException("CNF-002", "No category by this id");
-        }
-
-        // If given category_id match with any category in DB, then get all restaurants having matched category
-        final List<RestaurantCategoryEntity> allRestaurantCategories = restaurantService.getRestaurantByCategoryId(matchedCategory.getId());
-
-        // Add the list of restaurants to RestaurantList
-        List<RestaurantList> details = new ArrayList<RestaurantList>();
-        for (RestaurantCategoryEntity restaurantCategoryEntity:allRestaurantCategories) {
-            RestaurantEntity n = restaurantCategoryEntity.getRestaurant();
-            RestaurantList detail = new RestaurantList();
-            detail.setId(UUID.fromString(n.getUuid()));
-            detail.setRestaurantName(n.getRestaurantName());
-            detail.setPhotoURL(n.getPhotoUrl());
-            detail.setCustomerRating(n.getCustomerRating());
-            detail.setAveragePrice(n.getAvgPriceForTwo());
-            detail.setNumberCustomersRated(n.getNumCustomersRated());
-
-            // Get address of restaurant from address entity
-            AddressEntity addressEntity = addressService.getAddressById(n.getAddress().getId());
-            RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress();
-
-            responseAddress.setId(UUID.fromString(addressEntity.getUuid()));
-            responseAddress.setFlatBuildingName(addressEntity.getFlatBuilNo());
-            responseAddress.setLocality(addressEntity.getLocality());
-            responseAddress.setCity(addressEntity.getCity());
-            responseAddress.setPincode(addressEntity.getPincode());
-
-            // Get state for current address from state entity
-            StateEntity stateEntity = stateService.getStateById(addressEntity.getState().getId());
-            RestaurantDetailsResponseAddressState responseAddressState = new RestaurantDetailsResponseAddressState();
-
-            responseAddressState.setId(UUID.fromString(stateEntity.getUuid()));
-            responseAddressState.setStateName(stateEntity.getStateName());
-            responseAddress.setState(responseAddressState);
-
-            // Set address with state into restaurant obj
-            detail.setAddress(responseAddress);
-
-            // Loop through the categories to add category names to the list
-            List<String> categoryLists = new ArrayList();
-            for (CategoryEntity categoryEntity :n.getCategoryEntities()) {
-                categoryLists.add(categoryEntity.getCategoryName());
+            //Calls  getCategoriesByRestaurant to get categories of the corresponding restaurant.
+            List<CategoryEntity> categoryEntities = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid());
+            String categories = new String();
+            ListIterator<CategoryEntity> listIterator = categoryEntities.listIterator();
+            //To concat the category names.
+            while (listIterator.hasNext()) {
+                categories = categories + listIterator.next().getCategoryName();
+                if (listIterator.hasNext()) {
+                    categories = categories + ", ";
+                }
             }
 
-            // Sort category names in alphabetical order
-            Collections.sort(categoryLists);
+            //Creating the RestaurantDetailsResponseAddressState for the RestaurantDetailsResponseAddress
+            RestaurantDetailsResponseAddressState restaurantDetailsResponseAddressState = new RestaurantDetailsResponseAddressState()
+                    .id(UUID.fromString(restaurantEntity.getAddress().getState().getUuid()))
+                    .stateName(restaurantEntity.getAddress().getState().getStateName());
 
-            // Join List items as string with comma(,)
-            detail.setCategories(String.join(",", categoryLists));
+            //Creating the RestaurantDetailsResponseAddress for the RestaurantList
+            RestaurantDetailsResponseAddress restaurantDetailsResponseAddress = new RestaurantDetailsResponseAddress()
+                    .id(UUID.fromString(restaurantEntity.getAddress().getUuid()))
+                    .city(restaurantEntity.getAddress().getCity())
+                    .flatBuildingName(restaurantEntity.getAddress().getFlatBuilNo())
+                    .locality(restaurantEntity.getAddress().getLocality())
+                    .pincode(restaurantEntity.getAddress().getPincode())
+                    .state(restaurantDetailsResponseAddressState);
 
-            // Add category detail to details(RestaurantList)
-            details.add(detail);
+            //Creating RestaurantList to add to list of RestaurantList
+            RestaurantList restaurantList = new RestaurantList()
+                    .id(UUID.fromString(restaurantEntity.getUuid()))
+                    .restaurantName(restaurantEntity.getRestaurantName())
+                    .averagePrice(restaurantEntity.getAvgPriceForTwo())
+                    .categories(categories)
+                    .customerRating(BigDecimal.valueOf(restaurantEntity.getCustomerRating()))
+                    .numberCustomersRated(restaurantEntity.getNumCustomersRated())
+                    .photoURL(restaurantEntity.getPhotoUrl())
+                    .address(restaurantDetailsResponseAddress);
+
+            //Adding it to the list
+            restaurantLists.add(restaurantList);
+
         }
 
-        // return response entity with RestaurantLists(details) and Http status
-        return new ResponseEntity<>(details, HttpStatus.OK);
+        //Creating the RestaurantListResponse by adding the list of RestaurantList
+        RestaurantListResponse restaurantListResponse = new RestaurantListResponse().restaurants(restaurantLists);
+        return new ResponseEntity<RestaurantListResponse>(restaurantListResponse, HttpStatus.OK);
     }
 
     /** Implements updateRestaurantDetails Endpoint
@@ -306,7 +289,7 @@ public class RestaurantController {
         details.setId(UUID.fromString(restaurant.getUuid()));
         details.setRestaurantName(restaurant.getRestaurantName());
         details.setPhotoURL(restaurant.getPhotoUrl());
-        details.setCustomerRating(restaurant.getCustomerRating());
+        details.setCustomerRating(BigDecimal.valueOf(restaurant.getCustomerRating()));
         details.setAveragePrice(restaurant.getAvgPriceForTwo());
         details.setNumberCustomersRated(restaurant.getNumCustomersRated());
 
@@ -345,7 +328,7 @@ public class RestaurantController {
                 itemDetail.setId(UUID.fromString(itemEntity.getUuid()));
                 itemDetail.setItemName(itemEntity.getItemName());
                 itemDetail.setPrice(itemEntity.getPrice());
-                //itemDetail.setItemType(ItemQuantityResponseItem.TypeEnum.valueOf(itemEntity.getType()));
+                itemDetail.setItemType(getItemType(itemEntity.getType()));
                 itemLists.add(itemDetail);
             }
             categoryListDetail.setItemList(itemLists);
@@ -359,5 +342,15 @@ public class RestaurantController {
 
         // return response entity with RestaurantDetails(details) and Http status
         return new ResponseEntity<>(details, HttpStatus.OK);
+    }
+
+    ItemList.ItemTypeEnum getItemType (String type) {
+        if (type.equals("0")) {
+            return ItemList.ItemTypeEnum.VEG;
+        } else if (type.equals("1")) {
+            return ItemList.ItemTypeEnum.NON_VEG;
+        } else { // No proper Type, default to NON-VEG
+            return ItemList.ItemTypeEnum.VEG;
+        }
     }
 }

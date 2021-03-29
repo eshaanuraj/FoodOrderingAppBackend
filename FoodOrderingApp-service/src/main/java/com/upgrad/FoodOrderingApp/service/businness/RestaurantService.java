@@ -1,20 +1,16 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.RestaurantDao;
-import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
-import com.upgrad.FoodOrderingApp.service.entity.RestaurantCategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.InvalidRatingException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -61,10 +57,6 @@ public class RestaurantService {
         return restaurantEntity;
     }
 
-    // Method to get the restaurants by the categoryUUID as input parameter
-    public List<RestaurantCategoryEntity> getRestaurantByCategoryId(final Integer categoryID) {
-        return restaurantDao.getRestaurantByCategoryId(categoryID);
-    }
 
     @Transactional
     public RestaurantEntity updateRestaurantDetails (final Double customerRating, final String restaurant_id, final String authorizationToken)
@@ -93,13 +85,19 @@ public class RestaurantService {
         }
 
         // update rating and add it to the restaurantEntity
-        BigDecimal oldRating = (restaurantEntity.getCustomerRating().multiply(new BigDecimal(restaurantEntity.getNumCustomersRated())));
-        BigDecimal newRating = (oldRating.add(new BigDecimal(customerRating))).divide(new BigDecimal(restaurantEntity.getNumCustomersRated() + 1));
-        restaurantEntity.setCustomerRating(newRating);
-        restaurantEntity.setNumCustomersRated(restaurantEntity.getNumCustomersRated() + 1);
+        DecimalFormat format = new DecimalFormat("##.0"); //keeping format to one decimal
+        double restaurantRating = restaurantEntity.getCustomerRating();
+        Integer restaurantNoOfCustomerRated = restaurantEntity.getNumCustomersRated();
+        restaurantEntity.setNumCustomersRated(restaurantNoOfCustomerRated+1);
 
-        //called restaurantDao to merge the content and update in the database
-        restaurantDao.updateRestaurantDetails(restaurantEntity);
-        return restaurantEntity;
+        //calculating the new customer rating as per the given data and formula
+        double newCustomerRating = (restaurantRating*(restaurantNoOfCustomerRated.doubleValue())+customerRating)/restaurantEntity.getNumCustomersRated();
+
+        restaurantEntity.setCustomerRating(Double.parseDouble(format.format(newCustomerRating)));
+
+        //Updating the restautant in the db using the method updateRestaurantRating of restaurantDao.
+        RestaurantEntity updatedRestaurantEntity = restaurantDao.updateRestaurantDetails(restaurantEntity);
+
+        return updatedRestaurantEntity;
     }
 }

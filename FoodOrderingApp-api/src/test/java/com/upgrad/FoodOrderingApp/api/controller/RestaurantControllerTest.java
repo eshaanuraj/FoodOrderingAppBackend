@@ -22,6 +22,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.junit.Assert.assertEquals;
+
 
 import java.util.Collections;
 import java.util.UUID;
@@ -121,7 +123,7 @@ public class RestaurantControllerTest {
     @Test
     public void shouldGetRestaurantDetailsByGivenName() throws Exception {
         final RestaurantEntity restaurantEntity = getRestaurantEntity();
-        when(mockRestaurantService.restaurantsByName("someRestaurantName"))
+        when(mockRestaurantService.getRestaurantsByName("someRestaurantName"))
                 .thenReturn(Collections.singletonList(restaurantEntity));
 
         final CategoryEntity categoryEntity = getCategoryEntity();
@@ -141,7 +143,7 @@ public class RestaurantControllerTest {
         assertEquals(restaurantList.getAddress().getId().toString(), restaurantEntity.getAddress().getUuid());
         assertEquals(restaurantList.getAddress().getState().getId().toString(), restaurantEntity.getAddress().getState().getUuid());
 
-        verify(mockRestaurantService, times(1)).restaurantsByName("someRestaurantName");
+        verify(mockRestaurantService, times(1)).getRestaurantsByName("someRestaurantName");
         verify(mockCategoryService, times(1)).getCategoriesByRestaurant(restaurantEntity.getUuid());
     }
 
@@ -149,14 +151,14 @@ public class RestaurantControllerTest {
     // field is empty.
     @Test
     public void shouldNotGetRestaurantByNameIfNameIsEmpty() throws Exception {
-        when(mockRestaurantService.restaurantsByName(anyString()))
+        when(mockRestaurantService.getRestaurantsByName(anyString()))
                 .thenThrow(new RestaurantNotFoundException("RNF-003", "Restaurant name field should not be empty"));
 
         mockMvc
                 .perform(get("/restaurant/name/emptyString").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("RNF-003"));
-        verify(mockRestaurantService, times(1)).restaurantsByName(anyString());
+        verify(mockRestaurantService, times(1)).getRestaurantsByName(anyString());
     }
 
 
@@ -166,7 +168,7 @@ public class RestaurantControllerTest {
     @Test
     public void shouldGetRestaurantDetailsByGivenCategoryId() throws Exception {
         final RestaurantEntity restaurantEntity = getRestaurantEntity();
-        when(mockRestaurantService.restaurantByCategory("someCategoryId"))
+        when(mockRestaurantService.getRestaurantByCategoryId("someCategoryId"))
                 .thenReturn(Collections.singletonList(restaurantEntity));
 
         final CategoryEntity categoryEntity = getCategoryEntity();
@@ -186,7 +188,7 @@ public class RestaurantControllerTest {
         assertEquals(restaurantList.getAddress().getId().toString(), restaurantEntity.getAddress().getUuid());
         assertEquals(restaurantList.getAddress().getState().getId().toString(), restaurantEntity.getAddress().getState().getUuid());
 
-        verify(mockRestaurantService, times(1)).restaurantByCategory("someCategoryId");
+        verify(mockRestaurantService, times(1)).getRestaurantByCategoryId("someCategoryId");
         verify(mockCategoryService, times(1)).getCategoriesByRestaurant(restaurantEntity.getUuid());
     }
 
@@ -194,28 +196,28 @@ public class RestaurantControllerTest {
     // field is empty.
     @Test
     public void shouldNotGetRestaurantByCategoryidIfCategoryIdIsEmpty() throws Exception {
-        when(mockRestaurantService.restaurantByCategory(anyString()))
+        when(mockRestaurantService.getRestaurantByCategoryId(anyString()))
                 .thenThrow(new CategoryNotFoundException("CNF-001", "Category id field should not be empty"));
 
         mockMvc
                 .perform(get("/restaurant/category/emptyString").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("CNF-001"));
-        verify(mockRestaurantService, times(1)).restaurantByCategory(anyString());
+        verify(mockRestaurantService, times(1)).getRestaurantByCategoryId(anyString());
     }
 
     //This test case passes when you have handled the exception of trying to fetch any restaurant by its category id, while there
     // is not category by that id in the database
     @Test
     public void shouldNotGetRestaurantsByCategoryIdIfCategoryDoesNotExistAgainstGivenId() throws Exception {
-        when(mockRestaurantService.restaurantByCategory("someCategoryId"))
+        when(mockRestaurantService.getRestaurantByCategoryId("someCategoryId"))
                 .thenThrow(new CategoryNotFoundException("CNF-002", "No category by this id"));
 
         mockMvc
                 .perform(get("/restaurant/category/someCategoryId").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("CNF-002"));
-        verify(mockRestaurantService, times(1)).restaurantByCategory("someCategoryId");
+        verify(mockRestaurantService, times(1)).getRestaurantByCategoryId("someCategoryId");
     }
 
 
@@ -263,7 +265,7 @@ public class RestaurantControllerTest {
         final RestaurantEntity restaurantEntity = getRestaurantEntity();
         when(mockRestaurantService.restaurantByUUID(restaurantId)).thenReturn(restaurantEntity);
 
-        when(mockRestaurantService.updateRestaurantRating(restaurantEntity, 4.5))
+        when(mockRestaurantService.updateRestaurantDetails( 4.5, restaurantEntity.getUuid(), "database_accesstoken2"))
                 .thenReturn(new RestaurantEntity());
 
         mockMvc
@@ -293,7 +295,8 @@ public class RestaurantControllerTest {
                 .andExpect(jsonPath("code").value("ATHR-001"));
         verify(mockCustomerService, times(1)).getCustomer("invalid_auth");
         verify(mockRestaurantService, times(0)).restaurantByUUID(anyString());
-        verify(mockRestaurantService, times(0)).updateRestaurantRating(any(), anyDouble());
+        CategoryEntity restaurantEntity;
+        verify(mockRestaurantService, times(0)).updateRestaurantDetails( 4.5, restaurantEntity.getUuid(), "database_accesstoken2"););
     }
 
     //This test case passes when you have handled the exception of trying to update restaurant rating while you are
@@ -344,7 +347,7 @@ public class RestaurantControllerTest {
 
         mockMvc
                 .perform(get("/restaurant/emptyString").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .header("authorization", "Bearer database_accesstoken2"))
+                        .header("authorization", "Bearer database_accesstoken2"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("RNF-002"));
         verify(mockCustomerService, times(0)).getCustomer("database_accesstoken2");
@@ -399,7 +402,7 @@ public class RestaurantControllerTest {
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
         verify(mockRestaurantService, times(1)).restaurantByUUID(restaurantId);
         verify(mockRestaurantService, times(1))
-                .updateRestaurantDetails (restaurantEntity, -5.5);
+                .updateRestaurantRating(restaurantEntity, -5.5);
     }
 
     //This test case passes when you have handled the exception of trying to update restaurant rating while the rating
@@ -459,12 +462,13 @@ public class RestaurantControllerTest {
         final String restaurantId = UUID.randomUUID().toString();
         restaurantEntity.setUuid(restaurantId);
         restaurantEntity.setAddress(addressEntity);
-        restaurantEntity.setAvgPriceForTwo(123);
+        restaurantEntity.setAvgPrice(123);
         restaurantEntity.setCustomerRating(3.4);
-        restaurantEntity.setNumCustomersRated(200);
+        restaurantEntity.setNumberCustomersRated(200);
         restaurantEntity.setPhotoUrl("someurl");
         restaurantEntity.setRestaurantName("Famous Restaurant");
         return restaurantEntity;
     }
 }
-*/
+
+ */
