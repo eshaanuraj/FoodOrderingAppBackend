@@ -123,7 +123,7 @@ public class RestaurantControllerTest {
     @Test
     public void shouldGetRestaurantDetailsByGivenName() throws Exception {
         final RestaurantEntity restaurantEntity = getRestaurantEntity();
-        when(mockRestaurantService.getRestaurantsByName("someRestaurantName"))
+        when(mockRestaurantService.getRestaurantsByName("Lion Heart"))
                 .thenReturn(Collections.singletonList(restaurantEntity));
 
         final CategoryEntity categoryEntity = getCategoryEntity();
@@ -131,7 +131,7 @@ public class RestaurantControllerTest {
                 .thenReturn(Collections.singletonList(categoryEntity));
 
         final String responseString = mockMvc
-                .perform(get("/restaurant/name/someRestaurantName").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .perform(get("/restaurant/name/Lion Heart").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
