@@ -1,19 +1,17 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-//This Class represents the RestaurantCategory table in the Database restaurantDB
-
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-
 @Entity
 @Table(name = "restaurant_category")
 @NamedQueries({
 
-        @NamedQuery(name = "getRestaurantsByCategoryId", query = "select r from RestaurantCategoryEntity r where r.category.id=:id"),
+       // @NamedQuery(name = "getCategoriesByRestaurant",query = "SELECT r FROM RestaurantCategoryEntity r WHERE r.restaurant= :restaurant ORDER BY r.category.categoryName ASC "),
+       // @NamedQuery(name = "getRestaurantByCategory",query = "SELECT r FROM RestaurantCategoryEntity r WHERE r.category = :category ORDER BY r.restaurant.customerRating DESC "),
 })
 public class RestaurantCategoryEntity implements Serializable {
 

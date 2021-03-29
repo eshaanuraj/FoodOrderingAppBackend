@@ -1,18 +1,16 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +20,8 @@ import java.util.Set;
         {
                 @NamedQuery(name = "getAllRestaurants", query = "select r from RestaurantEntity r order by r.customerRating desc"),
                 @NamedQuery(name = "getRestaurantByName", query = "select r from RestaurantEntity  r where lower(r.restaurantName) like :restaurantName order by r.restaurantName"),
-                @NamedQuery(name = "getRestaurantByUUId",query = "select r from RestaurantEntity r where lower(r.uuid) = :uuid")
+                @NamedQuery(name = "getRestaurantByUUId",query = "select r from RestaurantEntity r where lower(r.uuid) = :uuid"),
+                @NamedQuery(name = "getRestaurantsByRating",query = "SELECT r FROM RestaurantEntity r ORDER BY r.customerRating DESC")
         }
 )
 
@@ -50,7 +49,7 @@ public class RestaurantEntity implements Serializable {
 
     @Column(name = "customer_rating")
     @NotNull
-    private BigDecimal customerRating;
+    private double customerRating;
 
     @Column(name = "number_of_customers_rated")
     @NotNull
@@ -110,11 +109,11 @@ public class RestaurantEntity implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public BigDecimal getCustomerRating() {
+    public double getCustomerRating() {
         return customerRating;
     }
 
-    public void setCustomerRating(BigDecimal customerRating) {
+    public void setCustomerRating(double customerRating) {
         this.customerRating = customerRating;
     }
 

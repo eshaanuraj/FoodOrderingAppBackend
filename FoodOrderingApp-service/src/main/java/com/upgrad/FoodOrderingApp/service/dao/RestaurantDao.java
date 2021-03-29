@@ -1,11 +1,12 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
 
-import com.upgrad.FoodOrderingApp.service.entity.RestaurantCategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 //This Class represents the data access object of Restaurant entity
@@ -37,8 +38,9 @@ public class RestaurantDao {
 
     }
     // Method to update Restaurant Details
-    public void updateRestaurantDetails(final RestaurantEntity updatedRestaurantEntity) {
+    public RestaurantEntity updateRestaurantDetails(final RestaurantEntity updatedRestaurantEntity) {
         entityManager.merge(updatedRestaurantEntity);
+        return updatedRestaurantEntity;
     }
     //To get the list of restaurant by name from db, returns null on error
     public List<RestaurantEntity> getRestaurantsByName(String restaurantName) {
@@ -52,10 +54,13 @@ public class RestaurantDao {
 
     }
     //To get the list of restaurant by Category Uuid from db, returns null on error
-    public List<RestaurantCategoryEntity> getRestaurantByCategoryId(final Integer categoryID) {
-        try {
-            return entityManager.createNamedQuery("getRestaurantsByCategoryId", RestaurantCategoryEntity.class).setParameter("id",categoryID).getResultList();
-        } catch(NoResultException nre) {
+
+
+    public List<RestaurantEntity> getRestaurantsByRating(){
+        try{
+            List<RestaurantEntity> restaurantEntities = entityManager.createNamedQuery("getRestaurantsByRating",RestaurantEntity.class).getResultList();
+            return restaurantEntities;
+        }catch (NoResultException nre){
             return null;
         }
     }
