@@ -74,16 +74,18 @@ public class OrderService {
 	}
 
 
-	public CouponEntity getCouponByCouponName(String couponName)  {
+	public CouponEntity getCouponByCouponName(String couponName) throws CouponNotFoundException  {
+
 		if(StringUtils.isEmpty(couponName)) {
-			return null;
+			throw new CouponNotFoundException("CPF-002","Coupon name field should not be empty");
 		}
-		try {
-			CouponEntity couponByName = couponDao.getCouponByName(couponName);
-	    	return couponByName;
-		}catch(Exception ex) {
-			return null;
-		}
+	
+		CouponEntity couponByName = couponDao.getCouponByName(couponName);
+		if(couponByName == null) {
+			throw new CouponNotFoundException("CPF-001","No coupon by this name");
+		} 
+		return couponByName;
+
 	}
 
 

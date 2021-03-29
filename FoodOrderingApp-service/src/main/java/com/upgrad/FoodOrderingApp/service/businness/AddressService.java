@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,13 +80,18 @@ public class AddressService {
 	}
 
 
-	public List<AddressEntity> getAllSavedAddresses(CustomerEntity customerEntity) { 
+	public List<AddressEntity> getAllAddress(CustomerEntity customerEntity) { 
 		List<AddressEntity> addressList = addressDao.getAllSavedAddresses(customerEntity);
 		return addressList;
 	}
 
 
 	public String deleteSavedAddress(CustomerEntity customerEntity , Integer addressId) throws AddressNotFoundException { 
+		
+		if (addressId == null) {
+			throw new AddressNotFoundException("ANF-005", "Address id can not be empty");
+		}
+
 		// TODO Auto-generated method stub
 		Integer customerId = customerEntity.getId(); 
 		
@@ -112,12 +118,6 @@ public class AddressService {
     public AddressEntity getAddressById( Long addressId) {
         return addressDao.getAddressById(addressId);
     }
-
-
-	public  List<AddressEntity>  getAllAddress(CustomerEntity customerEntity) { 
-		return getAllSavedAddresses(customerEntity);
-		
-	}
 
 
 	public StateEntity getStateByUUID(String uuid) { 

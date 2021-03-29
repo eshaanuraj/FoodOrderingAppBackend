@@ -56,26 +56,10 @@ public class AddressController {
 			throws SignUpRestrictedException, AuthenticationFailedException, AuthorizationFailedException,
 			SaveAddressException, AddressNotFoundException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = customerService.getAuthToken(accessToken);
-
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
-
-		CustomerEntity customerEntity = customerAuthToken.getCustomer();
+		CustomerEntity customerEntity = customerService.getCustomer(accessToken);
 
 		AddressEntity addressEntity = new AddressEntity();
 
@@ -106,27 +90,11 @@ public class AddressController {
 			@RequestHeader("authorization") final String authorization)
 			throws AuthenticationFailedException, AuthorizationFailedException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = customerService.getAuthToken(accessToken);
-
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
-
-		CustomerEntity customerEntity = customerAuthToken.getCustomer();
-		List<AddressEntity> addressEntityList = addressService.getAllSavedAddresses(customerEntity);
+		CustomerEntity customerEntity = customerService.getCustomer(accessToken);
+		List<AddressEntity> addressEntityList = addressService.getAllAddress(customerEntity);
 
 		List<AddressList> listOfAddressList = new ArrayList<AddressList>();
 
@@ -159,30 +127,10 @@ public class AddressController {
 			@RequestHeader("authorization") final String authorization, @PathVariable("address_id") Integer addressId)
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = customerService.getAuthToken(accessToken);
-
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
-
-		CustomerEntity customerEntity = customerAuthToken.getCustomer();
-
-		if (addressId == null) {
-			throw new AddressNotFoundException("ANF-005", "Address id can not be empty");
-		}
+		CustomerEntity customerEntity = customerService.getCustomer(accessToken);
 
 		String addressUuid = addressService.deleteSavedAddress(customerEntity, addressId);
 		DeleteAddressResponse deleteAddressResponse = new DeleteAddressResponse();
