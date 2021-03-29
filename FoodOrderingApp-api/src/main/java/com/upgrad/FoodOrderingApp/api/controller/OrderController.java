@@ -239,9 +239,6 @@ public class OrderController {
 		// Building OrderEntity Object
 		OrderEntity orderEntity = new OrderEntity();
 
-		AddressEntity addressByUuid = addressService.getAddressByUuid(addressId);
-
-		orderEntity.setAddress(addressByUuid);
 
 		orderEntity.setBill(bill.intValue());
 
@@ -251,12 +248,17 @@ public class OrderController {
 		orderEntity.setDiscount(discount.intValue());
 		orderEntity.setOrderedDate(new Date());
 
-		RestaurantEntity restaurantByUUID = restaurantService.restaurantByUUID(restaurantId.toString());
-
-		orderEntity.setRestaurant(restaurantByUUID);
-
 		PaymentEntity paymentByUUID = paymentService.getPaymentByUUID(paymentId.toString());
 		orderEntity.setPayment(paymentByUUID);
+
+		AddressEntity addressByUuid = addressService.getAddressByUUID(addressId,customerEntity);
+		
+		orderEntity.setAddress(addressByUuid);
+		
+		RestaurantEntity restaurantByUUID = restaurantService.restaurantByUUID(restaurantId.toString());
+		
+		orderEntity.setRestaurant(restaurantByUUID);
+		
 
 		orderEntity.setUuid(UUID.randomUUID().toString());
 
@@ -267,9 +269,7 @@ public class OrderController {
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 
 			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
-			if (itemByUuid == null) {
-				throw new ItemNotFoundException("INF-003", "No item by this id exist");
-			}
+			
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);
 			ordItemEntity.setPrice(itq.getPrice());

@@ -61,7 +61,7 @@ public class AddressControllerTest {
 
         final AddressEntity addressEntity = new AddressEntity();
         addressEntity.setUuid("randomUuid001");
-        when(mockAddressService.saveAddress(any(), any())).thenReturn(addressEntity);
+        when(mockAddressService.saveAddress(any(), any())).thenReturn(addressEntity); 
 
         mockMvc
                 .perform(post("/address?content=my_address")
@@ -100,7 +100,7 @@ public class AddressControllerTest {
                 .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
 
         mockMvc
-                .perform(post("/address?content=my_address")
+                .perform(post("/address")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .header("authorization", "Bearer database_accesstoken"))
                 .andExpect(status().isForbidden())
@@ -197,7 +197,8 @@ public class AddressControllerTest {
         when(mockAddressService.getAddressByUUID("82849cd5-106e-4b34-b9bf-94954c6ff527", customerEntity)).thenReturn(addressEntity);
 
         final AddressEntity deletedAddressEntity = new AddressEntity();
-        final String uuid = UUID.randomUUID().toString();
+        //final String uuid = UUID.randomUUID().toString();
+        final String uuid = "82849cd5-106e-4b34-b9bf-94954c6ff527";
         deletedAddressEntity.setUuid(uuid);
         when(mockAddressService.deleteAddress(addressEntity)).thenReturn(deletedAddressEntity);
 

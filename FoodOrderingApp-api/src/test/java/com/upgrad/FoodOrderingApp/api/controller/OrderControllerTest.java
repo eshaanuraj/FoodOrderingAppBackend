@@ -242,7 +242,7 @@ public class OrderControllerTest {
         verify(mockAddressService, times(1))
                 .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
         verify(mockRestaurantService, times(0)).restaurantByUUID(anyString());
-        verify(mockOrderService, times(1)).getCouponByUuid(anyString());
+        verify(mockOrderService, times(1)).getCouponByCouponId(anyString());
         verify(mockOrderService, times(0)).saveOrder(any());
         verify(mockOrderService, times(0)).saveOrderItem(any());
     }
@@ -310,7 +310,7 @@ public class OrderControllerTest {
         verify(mockCustomerService, times(1))
                 .getCustomer("database_accesstoken2");
         verify(mockPaymentService, times(1))
-                .getPaymentByUuid(saveOrderRequest.getPaymentId());
+                .getPaymentByUUID(saveOrderRequest.getPaymentId().toString());
         verify(mockAddressService, times(1))
                 .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
         verify(mockRestaurantService, times(1))
@@ -469,7 +469,7 @@ public class OrderControllerTest {
         when(mockOrderService.getCouponByCouponName("myCoupon")).thenReturn(couponEntity);
 
         mockMvc
-                .perform(get("/order/coupon/BEST20")
+                .perform(get("/order/coupon/myCoupon")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .header("authorization", "Bearer database_accesstoken2"))
                 .andExpect(status().isOk())
@@ -566,7 +566,7 @@ public class OrderControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value("CPF-001"));
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
-        verify(mockOrderService, times(1)).getCouponByName("myCoupon");
+        verify(mockOrderService, times(1)).getCouponByCouponName("myCoupon");
     }
 
     // ------------------------------------------ POJO Builder ------------------------------------------

@@ -102,7 +102,7 @@ public class AddressService {
 	}
 	
 	
-	public AddressEntity getAddressByUuid(String uuid) throws AddressNotFoundException {
+	public AddressEntity getAddressByUUID(String uuid) throws AddressNotFoundException {
 		AddressEntity addressByUuid = addressDao.getAddressByUuid(uuid);  
 		if (addressByUuid == null) {
 			throw new AddressNotFoundException("ANF-003", "No address by this id");
@@ -122,7 +122,7 @@ public class AddressService {
 		if(addressEntity == null) {
 			throw new AddressNotFoundException("ANF-003","No address by this id");
 		} 
-       
+        
 		return addressEntity;
 	}
 
