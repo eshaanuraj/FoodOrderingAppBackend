@@ -155,10 +155,11 @@ public class AddressController {
 	public @ResponseBody ResponseEntity<StatesListResponse> getAllStates() {
 
 		List<StateEntity> allStatesList = addressService.getAllStates();
-		if(allStatesList == null || allStatesList.size() == 0) {
-			return null;
-		}
 		StatesListResponse response = new StatesListResponse();
+		if(allStatesList == null || allStatesList.size() == 0) {
+			return new ResponseEntity<StatesListResponse>(response, HttpStatus.OK);
+		}
+		
 		List<StatesList> listOfStatesList = new ArrayList<StatesList>();
 		for(StateEntity stateEntity : allStatesList) {
 			StatesList statesList = new StatesList();
