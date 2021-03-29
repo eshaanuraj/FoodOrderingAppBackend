@@ -18,6 +18,7 @@ import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
 
 @Service
 public class OrderService {
@@ -49,8 +50,12 @@ public class OrderService {
 	}
 	
 	
-	public CouponEntity getCouponByUuid(String uuid) {
+	public CouponEntity getCouponByUuid(String uuid) throws CouponNotFoundException {
 		CouponEntity couponByUuid = couponDao.getCouponByUuid(uuid);
+		if (couponByUuid == null) {
+			throw new CouponNotFoundException("CPF-002", "No coupon by this id");
+		}
+ 
 		return couponByUuid;
 	}
 	
@@ -68,9 +73,12 @@ public class OrderService {
 	}
 
 
-	public ItemEntity getItemByUuid(@Valid UUID uuid) { 
+	public ItemEntity getItemByUuid(@Valid UUID uuid) throws ItemNotFoundException { 
 		ItemEntity itemByUuid = itemDao.getItemByUuid(uuid); 
-		return itemByUuid;
+		if (itemByUuid == null) {
+			throw new ItemNotFoundException("INF-003", "No item by this id exist");
+		}
+		return itemByUuid; 
 	}
 
 
@@ -89,8 +97,12 @@ public class OrderService {
 	}
 
 
-	public CouponEntity getCouponByCouponId(String uuid) { 
+	public CouponEntity getCouponByCouponId(String uuid) throws CouponNotFoundException { 
 		CouponEntity couponByUuid = couponDao.getCouponByUuid(uuid);
+		if (couponByUuid == null) {
+			throw new CouponNotFoundException("CPF-002", "No coupon by this id");
+		}
+ 
 		return couponByUuid;
 	}
 

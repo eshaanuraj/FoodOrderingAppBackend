@@ -53,28 +53,28 @@ public class RestExceptionHandler {
     // Handle Exceptions related to Address API's
     @ExceptionHandler(AddressNotFoundException.class)
     public ResponseEntity<ErrorResponse> addressNotFoundException(AddressNotFoundException addressNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(addressNotFoundException.getCode()).message(addressNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(addressNotFoundException.getCode()).message(addressNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     
     
     // Handle Exceptions related to Order API's
     @ExceptionHandler(CouponNotFoundException.class)
     public ResponseEntity<ErrorResponse> couponNotFoundException(CouponNotFoundException couponNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(couponNotFoundException.getCode()).message(couponNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(couponNotFoundException.getCode()).message(couponNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     
     
     // Handle Exceptions related to Order API's
     @ExceptionHandler(RestaurantNotFoundException.class)
     public ResponseEntity<ErrorResponse> restaurantNotFoundException(RestaurantNotFoundException restaurantNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(restaurantNotFoundException.getCode()).message(restaurantNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(restaurantNotFoundException.getCode()).message(restaurantNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     
 
     // Handle Exceptions related to Order API's
     @ExceptionHandler(PaymentMethodNotFoundException.class)
     public ResponseEntity<ErrorResponse> paymentMethodNotFoundException(PaymentMethodNotFoundException paymentMethodNotFoundException, WebRequest request) {
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(paymentMethodNotFoundException.getCode()).message(paymentMethodNotFoundException.getErrorMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(paymentMethodNotFoundException.getCode()).message(paymentMethodNotFoundException.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
     // Handle Exceptions related to Restaurant API's
     @ExceptionHandler(InvalidRatingException.class)

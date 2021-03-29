@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.upgrad.FoodOrderingApp.api.model.AddressList;
@@ -48,6 +49,8 @@ public class AddressController {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, path = "/address", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -74,13 +77,16 @@ public class AddressController {
 		addressEntity.setLocality(locality);
 		String stateUuid = saveAddressRequest.getStateUuid();
 		addressEntity.setActive(1);
-
-		String addressUuid = addressService.saveCustomerAddress(stateUuid, customerEntity, addressEntity);
+		
+		StateEntity stateByUUID = addressService.getStateByUUID(stateUuid); 
+		addressEntity.setState(stateByUUID);
+ 
+		AddressEntity savedAddress = addressService.saveAddress(customerEntity, addressEntity); 
 		SaveAddressResponse saveAddressResponse = new SaveAddressResponse();
-		saveAddressResponse.setId(addressUuid);
+		saveAddressResponse.setId(savedAddress.getUuid()); 
 		saveAddressResponse.setStatus("ADDRESS SUCCESSFULLY REGISTERED");
 
-		return new ResponseEntity<SaveAddressResponse>(saveAddressResponse, HttpStatus.OK);
+		return new ResponseEntity<SaveAddressResponse>(saveAddressResponse, HttpStatus.CREATED);
 
 	}
 
@@ -122,9 +128,9 @@ public class AddressController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.GET, path = "/address/{address_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.DELETE, path = "/address/{address_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<DeleteAddressResponse> deleteSavedAddresses(
-			@RequestHeader("authorization") final String authorization, @PathVariable("address_id") Integer addressId)
+			@RequestHeader("authorization") final String authorization, @PathVariable("address_id") String addressUUId)
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException {
 
 		String[] splitText = authorization.split(" ");
@@ -132,9 +138,10 @@ public class AddressController {
 
 		CustomerEntity customerEntity = customerService.getCustomer(accessToken);
 
-		String addressUuid = addressService.deleteSavedAddress(customerEntity, addressId);
+		AddressEntity addressByUUID = addressService.getAddressByUUID(addressUUId, customerEntity);  
+		addressService.deleteAddress(addressByUUID);
 		DeleteAddressResponse deleteAddressResponse = new DeleteAddressResponse();
-		deleteAddressResponse.setId(UUID.fromString(addressUuid));
+		deleteAddressResponse.setId(UUID.fromString(addressUUId));
 		deleteAddressResponse.setStatus("ADDRESS DELETED SUCCESSFULLY");
 
 		return new ResponseEntity<DeleteAddressResponse>(deleteAddressResponse, HttpStatus.OK);
@@ -142,8 +149,8 @@ public class AddressController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.GET, path = "/states", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<StateEntity>> getAllStates() {
+	@RequestMapping(method = RequestMethod.GET, path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody ResponseEntity<List<StateEntity>> getAllStates() {
 
 		List<StateEntity> allStatesList = addressService.getAllStates();
 		return new ResponseEntity<List<StateEntity>>(allStatesList, HttpStatus.OK);
