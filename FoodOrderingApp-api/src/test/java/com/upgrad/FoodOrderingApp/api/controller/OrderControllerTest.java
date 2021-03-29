@@ -112,7 +112,7 @@ public class OrderControllerTest {
         verify(mockOrderService, times(1))
                 .getCouponByCouponId(saveOrderRequest.getCouponId().toString());
         verify(mockOrderService, times(1)).saveOrder(any());
-        verify(mockOrderService, times(1)).saveOrderItem(any());
+        verify(mockOrderService, times(0)).saveOrderItem(any());
     }
 
     //This test case passes when you have handled the exception of trying to save an order while you are not logged  in.
@@ -315,7 +315,7 @@ public class OrderControllerTest {
                 .getAddressByUUID(saveOrderRequest.getAddressId(), customerEntity);
         verify(mockRestaurantService, times(1))
                 .restaurantByUUID(saveOrderRequest.getRestaurantId().toString());
-        verify(mockOrderService, times(1)).getCouponByUuid(anyString());
+        verify(mockOrderService, times(1)).getCouponByCouponId(anyString());
         verify(mockOrderService, times(0)).saveOrder(any());
         verify(mockOrderService, times(0)).saveOrderItem(any());
     }
