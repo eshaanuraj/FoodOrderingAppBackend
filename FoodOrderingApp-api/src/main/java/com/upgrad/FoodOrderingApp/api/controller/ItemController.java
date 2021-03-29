@@ -46,7 +46,7 @@ public class ItemController {
 
         for(ItemEntity ie: itemEntityList) {
             ItemList itemList = new ItemList().id(UUID.fromString(ie.getUuid()))
-                    .itemName(ie.getItemName()).price(ie.getPrice()).itemType(ItemQuantityResponseItem.TypeEnum.valueOf(ie.getType()));
+                    .itemName(ie.getItemName()).price(ie.getPrice()).itemType(getItemType(ie.getType()));
             itemListResponse.add(itemList);
             itemCount += 1;
             if (itemCount >= 5)
@@ -54,5 +54,14 @@ public class ItemController {
         }
 
         return new ResponseEntity<ItemListResponse>(itemListResponse, HttpStatus.OK);
+    }
+    ItemList.ItemTypeEnum getItemType (String type) {
+        if (type.equals("0")) {
+            return ItemList.ItemTypeEnum.VEG;
+        } else if (type.equals("1")) {
+            return ItemList.ItemTypeEnum.NON_VEG;
+        } else { // No proper Type, default to NON-VEG
+            return ItemList.ItemTypeEnum.VEG;
+        }
     }
 }

@@ -31,7 +31,7 @@ public class CommonService {
 
             // Check if token has expired
             final ZonedDateTime expiry = customerAuthTokenEntity.getExpiresAt();
-            if (now.compareTo(expiry) > 0) {
+            if (now.isAfter(expiry)) {
                 throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint");
             }
         }
