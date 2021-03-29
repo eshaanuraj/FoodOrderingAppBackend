@@ -16,8 +16,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "order_item")
 @NamedQueries(
-  {
-  }
+		{
+				@NamedQuery(name = "getOrderItemById", query = "select o from OrderItemEntity o where o.id=:id"),
+				@NamedQuery(name = "getItemsByOrder", query = "select o from OrderItemEntity o where o.orderEntity=:order"),
+		}
 )
 public class OrderItemEntity implements Serializable{
 

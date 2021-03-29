@@ -373,7 +373,7 @@ public class OrderControllerTest {
                 .thenReturn(customerEntity);
 
         final OrderEntity orderEntity = getOrderEntity(customerEntity);
-        when(mockOrderService.getOrdersByCustomers(customerId))
+        when(mockOrderService.getOrdersByCustomers(customerEntity))
                 .thenReturn(Collections.singletonList(orderEntity));
 
         final String responseString = mockMvc
@@ -392,12 +392,17 @@ public class OrderControllerTest {
         assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getState().getId().toString(), orderEntity.getAddress().getState().getUuid());
 
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
-        verify(mockOrderService, times(1)).getOrdersByCustomers(customerId);
+        verify(mockOrderService, times(1)).getOrdersByCustomers(customerEntity);
     }
 
     //This test case passes when you have handled the exception of trying to fetch placed orders if you are not logged in.
     @Test
     public void shouldNotGetPlacedOrderDetailsIfCustomerIsNotLoggedIn() throws Exception {
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
+        when(mockCustomerService.getCustomer("database_accesstoken2"))
+                .thenReturn(customerEntity);
         when(mockCustomerService.getCustomer("invalid_auth"))
                 .thenThrow(new AuthorizationFailedException("ATHR-001", "Customer is not Logged in."));
         mockMvc
@@ -408,13 +413,16 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("code").value("ATHR-001"));
 
         verify(mockCustomerService, times(1)).getCustomer("invalid_auth");
-        verify(mockOrderService, times(0)).getOrdersByCustomers(anyString());
+        verify(mockOrderService, times(0)).getOrdersByCustomers(customerEntity);
     }
 
     //This test case passes when you have handled the exception of trying to fetch placed orders if you are already
     // logged out.
     @Test
     public void shouldNotGetPlacedOrderDetailsIfCustomerIsLoggedOut() throws Exception {
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
         when(mockCustomerService.getCustomer("invalid_auth"))
                 .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
         mockMvc
@@ -425,13 +433,16 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("code").value("ATHR-002"));
 
         verify(mockCustomerService, times(1)).getCustomer("invalid_auth");
-        verify(mockOrderService, times(0)).getOrdersByCustomers(anyString());
+        verify(mockOrderService, times(0)).getOrdersByCustomers(customerEntity);
     }
 
     //This test case passes when you have handled the exception of trying to fetch placed orders if your session is
     // already expired.
     @Test
     public void shouldNotGetPlacedOrderDetailsIfCustomerSessionIsExpired() throws Exception {
+        final CustomerEntity customerEntity = new CustomerEntity();
+        final String customerId = UUID.randomUUID().toString();
+        customerEntity.setUuid(customerId);
         when(mockCustomerService.getCustomer("invalid_auth"))
                 .thenThrow(new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint."));
         mockMvc
@@ -442,7 +453,7 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("code").value("ATHR-003"));
 
         verify(mockCustomerService, times(1)).getCustomer("invalid_auth");
-        verify(mockOrderService, times(0)).getOrdersByCustomers(anyString());
+        verify(mockOrderService, times(0)).getOrdersByCustomers(customerEntity);
     }
 
     // ------------------------------------------ GET /order/coupon/{coupon_name} ------------------------------------------
