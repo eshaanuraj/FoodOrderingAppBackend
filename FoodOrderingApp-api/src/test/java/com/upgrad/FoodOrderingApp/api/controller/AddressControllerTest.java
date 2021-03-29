@@ -295,7 +295,7 @@ public class AddressControllerTest {
         when(mockCustomerService.getCustomer("database_accesstoken2")).thenReturn(customerEntity);
         when(mockAddressService.getAddressByUUID("82849cd5-106e-4b34-b9bf-94954c6ff527", customerEntity))
                 .thenThrow(new AuthorizationFailedException("ATHR-004", "You are not authorized to view/update/delete any one else's address"));
-
+ 
         mockMvc
                 .perform(delete("/address/82849cd5-106e-4b34-b9bf-94954c6ff527")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
