@@ -71,10 +71,21 @@ public class CategoryController {
             item.setId(UUID.fromString(itemEntity.getUuid()));
             item.setItemName(itemEntity.getItemName());
             item.setPrice(itemEntity.getPrice());
+            item.setItemType(getItemType(itemEntity.getType()));
             itemLists.add(item);
         }
         categoryDetailsResponse.setItemList(itemLists);
 
         return new ResponseEntity<CategoryDetailsResponse>(categoryDetailsResponse, HttpStatus.OK);
+    }
+
+    ItemList.ItemTypeEnum getItemType (String type) {
+        if (type.equals("0")) {
+            return ItemList.ItemTypeEnum.VEG;
+        } else if (type.equals("1")) {
+            return ItemList.ItemTypeEnum.NON_VEG;
+        } else { // No proper Type, default to NON-VEG
+            return ItemList.ItemTypeEnum.VEG;
+        }
     }
 }
