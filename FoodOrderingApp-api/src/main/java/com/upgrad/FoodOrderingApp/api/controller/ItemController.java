@@ -46,7 +46,7 @@ public class ItemController {
         for(ItemEntity ie: itemEntityList) {
 
             ItemList itemList = new ItemList().id(UUID.fromString(ie.getUuid()));
-                    .itemName(ie.getItemName()).price(ie.getPrice()).itemType(getItemType(ie.getType()));
+                    //.itemName(ie.getItemName()).price(ie.getPrice()).itemType(getItemType(ie.getType()));
 
             itemListResponse.add(itemList);
             itemCount += 1;
