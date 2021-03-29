@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -110,27 +111,29 @@ public class OrderController {
 
 		CustomerEntity customer = cuustomerService.getCustomer(accessToken);
 
-		List<OrderEntity> allOrdersForCustomer = orderService.getAllOrdersForCustomer(customer);
+		List<OrderEntity> allOrdersForCustomer = orderService.getOrdersByCustomers(customer);
 
 		List<OrderList> completeOrderList = new ArrayList<OrderList>();
-
-		for (OrderEntity orderEntity : allOrdersForCustomer) {
-			OrderList orderList = new OrderList();
-
-			orderList.setAddress(getOrderListAddress(orderEntity));
-			orderList.setBill(BigDecimal.valueOf(orderEntity.getBill()));
-			orderList.setCoupon(getOrderListCoupon(orderEntity));
-			orderList.setCustomer(getOrderListCustomer(orderEntity));
-			orderList.setDate(orderEntity.getOrderedDate().toString());
-			orderList.setDiscount(BigDecimal.valueOf(orderEntity.getDiscount()));
-			orderList.setId(UUID.fromString(orderEntity.getUuid()));
-			orderList.setItemQuantities(getOrderListItemQuantities(orderEntity));
-			orderList.setPayment(getOrderListPayment(orderEntity));
-
-			completeOrderList.add(orderList);
-
-		}
-
+        if(!CollectionUtils.isEmpty(allOrdersForCustomer)) {
+			for (OrderEntity orderEntity : allOrdersForCustomer) {
+				OrderList orderList = new OrderList();
+	
+				orderList.setAddress(getOrderListAddress(orderEntity));
+				orderList.setBill(BigDecimal.valueOf(orderEntity.getBill()));
+				orderList.setCoupon(getOrderListCoupon(orderEntity));
+				orderList.setCustomer(getOrderListCustomer(orderEntity));
+				orderList.setDate(orderEntity.getOrderedDate().toString());
+				orderList.setDiscount(BigDecimal.valueOf(orderEntity.getDiscount()));
+				orderList.setId(UUID.fromString(orderEntity.getUuid()));
+				if(getOrderListItemQuantities(orderEntity) != null) {
+				   orderList.setItemQuantities(getOrderListItemQuantities(orderEntity));
+				}
+				orderList.setPayment(getOrderListPayment(orderEntity));
+	
+				completeOrderList.add(orderList);
+	
+			}
+        }
 		return new ResponseEntity<List<OrderList>>(completeOrderList, HttpStatus.OK);
 
 	}
@@ -183,8 +186,13 @@ public class OrderController {
 	private List<ItemQuantityResponse> getOrderListItemQuantities(OrderEntity orderEntity) {
 		List<ItemQuantityResponse> itemQuantityList = new ArrayList<ItemQuantityResponse>();
 
+		
 		List<OrderItemEntity> orderItems = orderEntity.getOrderItems();
-
+       
+		if(CollectionUtils.isEmpty(orderItems)) {
+			return null;
+		}
+		
 		for (OrderItemEntity orderItemEntity : orderItems) {
 			ItemQuantityResponse itemQuantityResponse = new ItemQuantityResponse();
 			itemQuantityResponse.setPrice(orderItemEntity.getPrice());
