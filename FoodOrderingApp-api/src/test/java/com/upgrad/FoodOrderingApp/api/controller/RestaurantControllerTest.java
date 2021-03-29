@@ -22,19 +22,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.junit.Assert.assertEquals;
-
 
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.upgrad.FoodOrderingApp.service.common.ItemType.NON_VEG;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+//import static com.upgrad.FoodOrderingApp.service.common.ItemType.NON_VEG;
 
 // This class contains all the test cases regarding the restaurant controller
 @RunWith(SpringRunner.class)
@@ -296,7 +296,7 @@ public class RestaurantControllerTest {
         verify(mockCustomerService, times(1)).getCustomer("invalid_auth");
         verify(mockRestaurantService, times(0)).restaurantByUUID(anyString());
         CategoryEntity restaurantEntity;
-        verify(mockRestaurantService, times(0)).updateRestaurantDetails( 4.5, restaurantEntity.getUuid(), "database_accesstoken2");
+        verify(mockRestaurantService, times(0)).updateRestaurantDetails( 4.5, anyString(), "database_accesstoken2");
     }
 
     //This test case passes when you have handled the exception of trying to update restaurant rating while you are
@@ -417,8 +417,8 @@ public class RestaurantControllerTest {
         final RestaurantEntity restaurantEntity = getRestaurantEntity();
         when(mockRestaurantService.restaurantByUUID(restaurantId)).thenReturn(restaurantEntity);
 
-        when(mockRestaurantService.updateRestaurantDetails(-5.5,restaurantEntity.getUuid(),"Bearer database_accesstoken2")
-                .thenThrow(new InvalidRatingException("IRE-001", "Rating should be in the range of 1 to 5")));
+        when(mockRestaurantService.updateRestaurantDetails(-5.5,restaurantEntity.getUuid(),"Bearer database_accesstoken2"))
+                .thenThrow(new InvalidRatingException("IRE-001", "Rating should be in the range of 1 to 5"));
 
         mockMvc
                 .perform(put("/restaurant/" + restaurantId + "?customer_rating=5.5")
