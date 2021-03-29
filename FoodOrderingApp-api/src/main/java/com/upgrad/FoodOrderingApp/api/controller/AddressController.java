@@ -25,6 +25,8 @@ import com.upgrad.FoodOrderingApp.api.model.AddressListState;
 import com.upgrad.FoodOrderingApp.api.model.DeleteAddressResponse;
 import com.upgrad.FoodOrderingApp.api.model.SaveAddressRequest;
 import com.upgrad.FoodOrderingApp.api.model.SaveAddressResponse;
+import com.upgrad.FoodOrderingApp.api.model.StatesList;
+import com.upgrad.FoodOrderingApp.api.model.StatesListResponse;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
@@ -55,7 +57,7 @@ public class AddressController {
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, path = "/address", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<SaveAddressResponse> saveAddress(@RequestHeader("authorization") final String authorization,
-			@RequestBody final SaveAddressRequest saveAddressRequest)
+			@RequestBody(required = false) final SaveAddressRequest saveAddressRequest)
 			throws SignUpRestrictedException, AuthenticationFailedException, AuthorizationFailedException,
 			SaveAddressException, AddressNotFoundException {
 
@@ -149,11 +151,25 @@ public class AddressController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.GET, path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseEntity<List<StateEntity>> getAllStates() {
+	@RequestMapping(method = RequestMethod.GET, path = "/states")
+	public @ResponseBody ResponseEntity<StatesListResponse> getAllStates() {
 
 		List<StateEntity> allStatesList = addressService.getAllStates();
-		return new ResponseEntity<List<StateEntity>>(allStatesList, HttpStatus.OK);
+		StatesListResponse response = new StatesListResponse();
+		if(allStatesList == null || allStatesList.size() == 0) {
+			return new ResponseEntity<StatesListResponse>(response, HttpStatus.OK);
+		}
+		
+		List<StatesList> listOfStatesList = new ArrayList<StatesList>();
+		for(StateEntity stateEntity : allStatesList) {
+			StatesList statesList = new StatesList();
+			statesList.setId(UUID.fromString(stateEntity.getUuid()));
+			statesList.setStateName(stateEntity.getStateName()); 
+			listOfStatesList.add(statesList);
+			
+		}
+		response.setStates(listOfStatesList);
+		return new ResponseEntity<StatesListResponse>(response, HttpStatus.OK);
 
 	}
 

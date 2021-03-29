@@ -59,7 +59,7 @@ public class OrderService {
 		return couponByUuid;
 	}
 	
-	public List<OrderEntity> getAllOrdersForCustomer(CustomerEntity customer) {
+	public List<OrderEntity> getOrdersByCustomers(CustomerEntity customer) {
 		
 		List<OrderEntity> allOrdersForCustomer = orderDao.getAllOrdersForCustomer(customer);
 		return allOrdersForCustomer; 
@@ -113,9 +113,9 @@ public class OrderService {
 	}
 
 
-	public List<OrderEntity> getOrdersByCustomers(CustomerEntity customer) {
-		return orderDao.getOrdersByCustomerUUID(customer);
-	}
+//	public List<OrderEntity> getOrdersByCustomers(CustomerEntity customer) {
+//		return orderDao.getOrdersByCustomerUUID(customer);
+//	}
 	
 
 }
