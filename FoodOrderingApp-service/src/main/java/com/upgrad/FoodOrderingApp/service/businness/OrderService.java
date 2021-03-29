@@ -16,6 +16,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 
 @Service
@@ -70,6 +71,36 @@ public class OrderService {
 	public ItemEntity getItemByUuid(@Valid UUID uuid) { 
 		ItemEntity itemByUuid = itemDao.getItemByUuid(uuid); 
 		return itemByUuid;
+	}
+
+
+	public CouponEntity getCouponByCouponName(String couponName)  {
+		if(StringUtils.isEmpty(couponName)) {
+			return null;
+		}
+		try {
+			CouponEntity couponByName = couponDao.getCouponByName(couponName);
+	    	return couponByName;
+		}catch(Exception ex) {
+			return null;
+		}
+	}
+
+
+	public CouponEntity getCouponByCouponId(String uuid) { 
+		CouponEntity couponByUuid = couponDao.getCouponByUuid(uuid);
+		return couponByUuid;
+	}
+
+
+	public OrderItemEntity saveOrderItem(OrderItemEntity orderItemEntity) { 
+		
+		return orderDao.saveOrderItem(orderItemEntity);
+	}
+
+
+	public List<OrderEntity> getOrdersByCustomers(String customerUUId) { 
+		return orderDao.getOrdersByCustomerUUID(customerUUId);
 	}
 	
 

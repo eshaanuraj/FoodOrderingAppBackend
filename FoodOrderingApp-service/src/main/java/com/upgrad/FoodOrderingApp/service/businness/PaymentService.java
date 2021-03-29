@@ -25,5 +25,11 @@ public class PaymentService {
     public PaymentEntity getPaymentByUuid(UUID uuid) {
     	return paymentDao.getPaymentByUuid(uuid);
     }
+
+
+	public PaymentEntity getPaymentByUUID(String uuid) {
+		// TODO Auto-generated method stub
+		return paymentDao.getPaymentByUuid(UUID.fromString(uuid)); 
+	}
     
 }
