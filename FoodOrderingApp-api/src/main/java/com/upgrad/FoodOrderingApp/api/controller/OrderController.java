@@ -266,7 +266,7 @@ public class OrderController {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 
-			ItemEntity itemByUuid = orderService.getItemByUuid(UUID.fromString(itq.getItemId()));
+			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
 			if (itemByUuid == null) {
 				throw new ItemNotFoundException("INF-003", "No item by this id exist");
 			}
