@@ -34,7 +34,7 @@ public class CustomerService {
 			throw new AuthorizationFailedException("ATHR-002",
 					"Customer is logged out. Log in again to access this endpoint.");
 		}
-		if (now.compareTo(customerAuthToken.getExpiresAt()) > 0 ) {
+		if (now.isAfter(customerAuthToken.getExpiresAt())) {
 			throw new AuthorizationFailedException("ATHR-003",
 					"Your session is expired. Log in again to access this endpoint."); 
 		}

@@ -55,7 +55,7 @@ public class AddressController {
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.POST, path = "/address", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<SaveAddressResponse> saveAddress(@RequestHeader("authorization") final String authorization,
-			@RequestBody final SaveAddressRequest saveAddressRequest)
+			@RequestBody(required = false) final SaveAddressRequest saveAddressRequest)
 			throws SignUpRestrictedException, AuthenticationFailedException, AuthorizationFailedException,
 			SaveAddressException, AddressNotFoundException {
 
@@ -149,7 +149,8 @@ public class AddressController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(method = RequestMethod.GET, path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.GET, path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, 
+	               produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseEntity<List<StateEntity>> getAllStates() {
 
 		List<StateEntity> allStatesList = addressService.getAllStates();
