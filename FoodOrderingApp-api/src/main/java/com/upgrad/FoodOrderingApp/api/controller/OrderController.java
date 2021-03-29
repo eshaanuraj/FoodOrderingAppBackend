@@ -84,33 +84,12 @@ public class OrderController {
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException,
 			CouponNotFoundException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = cuustomerService.getAuthToken(accessToken);
-       System.out.println("accessToken ========= "+accessToken);
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
+		cuustomerService.getCustomer(accessToken);
 
-		if (StringUtils.isEmpty(couponName)) {
-			throw new CouponNotFoundException("CPF-002", "Coupon name field should not be empty");
-		}
-
-		CouponEntity couponByName = orderService.getCouponByName(couponName);
-		if (couponByName == null) {
-			throw new CouponNotFoundException("CPF-001", "No coupon by this name");
-		}
+		CouponEntity couponByName = orderService.getCouponByCouponName(couponName);
 
 		CouponDetailsResponse response = new CouponDetailsResponse();
 		response.setId(couponByName.getUuid());
@@ -126,26 +105,10 @@ public class OrderController {
 			@RequestHeader("authorization") final String authorization)
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = cuustomerService.getAuthToken(accessToken);
-
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
-
-		CustomerEntity customer = customerAuthToken.getCustomer();
+		CustomerEntity customer = cuustomerService.getCustomer(accessToken);
 
 		List<OrderEntity> allOrdersForCustomer = orderService.getAllOrdersForCustomer(customer);
 
@@ -260,24 +223,10 @@ public class OrderController {
 			AuthorizationFailedException, AddressNotFoundException, RestaurantNotFoundException,
 			CouponNotFoundException, ItemNotFoundException, PaymentMethodNotFoundException {
 
-		String[] splitText = authorization.split("Bearer ");
-		byte[] decoder = Base64.getDecoder().decode(splitText[0]);
-		String decodedText = new String(decoder);
-		String accessToken = decodedText;
+		String[] splitText = authorization.split(" ");
+		String accessToken = new String(splitText[1]);
 
-		CustomerAuthTokenEntity customerAuthToken = cuustomerService.getAuthToken(accessToken);
-
-		if (customerAuthToken == null) {
-			throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in");
-		}
-		if (customerAuthToken.getLogoutAt() != null) {
-			throw new AuthorizationFailedException("ATHR-002",
-					"Customer is logged out. Log in again to access this endpoint.");
-		}
-		if (customerAuthToken.getExpiresAt() != null) {
-			throw new AuthorizationFailedException("ATHR-003",
-					"Your session is expired. Log in again to access this endpoint.");
-		}
+		CustomerEntity customerEntity = cuustomerService.getCustomer(accessToken); 
 
 		String addressId = saveOrderRequest.getAddressId();
 		BigDecimal bill = saveOrderRequest.getBill();
@@ -304,7 +253,7 @@ public class OrderController {
 			throw new CouponNotFoundException("CPF-002", "No coupon by this id");
 		}
 		orderEntity.setCoupon(couponByUuid);
-		orderEntity.setCustomer(customerAuthToken.getCustomer());
+		orderEntity.setCustomer(customerEntity);
 		orderEntity.setDiscount(discount.intValue());
 		orderEntity.setOrderedDate(new Date());
 
