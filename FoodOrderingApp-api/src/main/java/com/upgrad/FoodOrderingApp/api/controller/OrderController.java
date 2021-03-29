@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.upgrad.FoodOrderingApp.api.model.CouponDetailsResponse;
+import com.upgrad.FoodOrderingApp.api.model.CustomerOrderResponse;
 import com.upgrad.FoodOrderingApp.api.model.ItemQuantity;
 import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponse;
 import com.upgrad.FoodOrderingApp.api.model.ItemQuantityResponseItem;
@@ -102,7 +103,7 @@ public class OrderController {
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<OrderList>> getPastOrdersOfUser(
+	public ResponseEntity<CustomerOrderResponse> getPastOrdersOfUser(
 			@RequestHeader("authorization") final String authorization)
 			throws AuthenticationFailedException, AuthorizationFailedException, AddressNotFoundException {
 
@@ -134,7 +135,9 @@ public class OrderController {
 	
 			}
         }
-		return new ResponseEntity<List<OrderList>>(completeOrderList, HttpStatus.OK);
+        CustomerOrderResponse response = new CustomerOrderResponse();
+        response.setOrders(completeOrderList); 
+		return new ResponseEntity<CustomerOrderResponse>(response, HttpStatus.OK);
 
 	}
 

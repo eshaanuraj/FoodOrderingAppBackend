@@ -383,13 +383,13 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-//        final CustomerOrderResponse customerOrderResponse = new ObjectMapper().readValue(responseString, CustomerOrderResponse.class);
-//        assertEquals(customerOrderResponse.getOrders().size(), 1);
-//        assertEquals(customerOrderResponse.getOrders().get(0).getId().toString(), orderEntity.getUuid());
-//        assertEquals(customerOrderResponse.getOrders().get(0).getId().toString(), orderEntity.getUuid());
-//        assertEquals(customerOrderResponse.getOrders().get(0).getCustomer().getId().toString(), orderEntity.getCustomer().getUuid());
-//        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getId().toString(), orderEntity.getAddress().getUuid());
-//        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getState().getId().toString(), orderEntity.getAddress().getState().getUuid());
+        final CustomerOrderResponse customerOrderResponse = new ObjectMapper().readValue(responseString, CustomerOrderResponse.class);
+        assertEquals(customerOrderResponse.getOrders().size(), 1);
+        assertEquals(customerOrderResponse.getOrders().get(0).getId().toString(), orderEntity.getUuid());
+        assertEquals(customerOrderResponse.getOrders().get(0).getId().toString(), orderEntity.getUuid());
+        assertEquals(customerOrderResponse.getOrders().get(0).getCustomer().getId().toString(), orderEntity.getCustomer().getUuid());
+        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getId().toString(), orderEntity.getAddress().getUuid());
+        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getState().getId().toString(), orderEntity.getAddress().getState().getUuid());
 
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
         verify(mockOrderService, times(1)).getOrdersByCustomers(customerEntity);
@@ -618,7 +618,7 @@ public class OrderControllerTest {
         restaurantEntity.setUuid(restaurantId);
         restaurantEntity.setAddress(addressEntity);
         restaurantEntity.setAvgPriceForTwo(123);
-        restaurantEntity.setCustomerRating(BigDecimal.valueOf(3.4));
+        restaurantEntity.setCustomerRating(3.4);
         restaurantEntity.setNumCustomersRated(200);
         restaurantEntity.setPhotoUrl("someurl");
         restaurantEntity.setRestaurantName("Famous Restaurant");
