@@ -40,12 +40,14 @@ public class ItemController {
 
         //Creating the ItemListResponse details as required.
         ItemListResponse itemListResponse = new ItemListResponse();
+
         itemEntities.forEach(itemEntity -> {
             ItemList itemList = new ItemList()
                     .id(UUID.fromString(itemEntity.getUuid()))
                     .itemName(itemEntity.getItemName())
                     .price(itemEntity.getPrice())
                     .itemType(ItemQuantityResponseItem.TypeEnum.valueOf(itemEntity.getType()));
+
             itemListResponse.add(itemList);
         });
 
