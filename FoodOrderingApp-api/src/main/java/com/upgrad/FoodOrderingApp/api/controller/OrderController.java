@@ -240,7 +240,7 @@ public class OrderController {
 
 			OrderItemEntity ordItemEntity = new OrderItemEntity();
 
-			ItemEntity itemByUuid = orderService.getItemByUuid(UUID.fromString(itq.getItemId()));
+			ItemEntity itemByUuid = orderService.getItemByUuid(itq.getItemId());
 			
 			ordItemEntity.setItem(itemByUuid);
 			ordItemEntity.setOrderEntity(orderEntity);

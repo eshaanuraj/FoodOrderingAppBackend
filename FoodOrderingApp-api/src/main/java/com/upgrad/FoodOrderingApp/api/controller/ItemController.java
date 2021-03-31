@@ -46,7 +46,7 @@ public class ItemController {
                     .id(UUID.fromString(itemEntity.getUuid()))
                     .itemName(itemEntity.getItemName())
                     .price(itemEntity.getPrice())
-                    .itemType(ItemQuantityResponseItem.TypeEnum.valueOf(itemEntity.getType()));
+                    .itemType(getItemType(itemEntity.getType()));
 
             itemListResponse.add(itemList);
         });
