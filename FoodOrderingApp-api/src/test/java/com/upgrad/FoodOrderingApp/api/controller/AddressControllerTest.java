@@ -1,4 +1,4 @@
-/*
+
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.UUID;
+import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,7 +61,7 @@ public class AddressControllerTest {
 
         final AddressEntity addressEntity = new AddressEntity();
         addressEntity.setUuid("randomUuid001");
-        when(mockAddressService.saveAddress(any(), any())).thenReturn(addressEntity);
+        when(mockAddressService.saveAddress(any(), any())).thenReturn(addressEntity); 
 
         mockMvc
                 .perform(post("/address?content=my_address")
@@ -99,7 +100,7 @@ public class AddressControllerTest {
                 .thenThrow(new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint."));
 
         mockMvc
-                .perform(post("/address?content=my_address")
+                .perform(post("/address")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .header("authorization", "Bearer database_accesstoken"))
                 .andExpect(status().isForbidden())
@@ -196,7 +197,8 @@ public class AddressControllerTest {
         when(mockAddressService.getAddressByUUID("82849cd5-106e-4b34-b9bf-94954c6ff527", customerEntity)).thenReturn(addressEntity);
 
         final AddressEntity deletedAddressEntity = new AddressEntity();
-        final String uuid = UUID.randomUUID().toString();
+        //final String uuid = UUID.randomUUID().toString();
+        final String uuid = "82849cd5-106e-4b34-b9bf-94954c6ff527";
         deletedAddressEntity.setUuid(uuid);
         when(mockAddressService.deleteAddress(addressEntity)).thenReturn(deletedAddressEntity);
 
@@ -293,7 +295,7 @@ public class AddressControllerTest {
         when(mockCustomerService.getCustomer("database_accesstoken2")).thenReturn(customerEntity);
         when(mockAddressService.getAddressByUUID("82849cd5-106e-4b34-b9bf-94954c6ff527", customerEntity))
                 .thenThrow(new AuthorizationFailedException("ATHR-004", "You are not authorized to view/update/delete any one else's address"));
-
+ 
         mockMvc
                 .perform(delete("/address/82849cd5-106e-4b34-b9bf-94954c6ff527")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -433,4 +435,4 @@ public class AddressControllerTest {
         final StatesListResponse statesLists = new ObjectMapper().readValue(response, StatesListResponse.class);
         assertNull(statesLists.getStates());
     }
-}*/
+}

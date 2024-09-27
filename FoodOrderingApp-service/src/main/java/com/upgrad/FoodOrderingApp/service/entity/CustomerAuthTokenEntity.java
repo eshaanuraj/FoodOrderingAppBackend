@@ -29,7 +29,7 @@ public class CustomerAuthTokenEntity implements Serializable {
     @NotNull
     private String uuid;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private CustomerEntity customer;
